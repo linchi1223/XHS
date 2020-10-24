@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <!-- <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" /> -->
-  <title>小黄书-您的宠物分享社区</title>
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.10.0/jquery.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-  </head>
-  <body style="">
-    <div id="app"></div>
- 
-    <script>
-  ;(function(docEl, t, padBaseSize){
-      var w,r=function(){
-          var nw=Math.min(docEl.getBoundingClientRect().width, padBaseSize)
-          if(nw!==w) w=nw,docEl.setAttribute('style','font-size:'+w/10+'px')
+<head>
+  <meta charset="utf-8">
+  <!-- <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" /> -->
+  <title>小黄书-您的宠物分享社区</title>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.10.0/jquery.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+  <div id="app"></div>
+
+  <script>
+    (function (docEl, t, padBaseSize) {
+      var w, r = function () {
+        var nw = Math.min(docEl.getBoundingClientRect().width, padBaseSize)
+        if (nw !== w) w = nw, docEl.setAttribute('style', 'font-size:' + w / 10 + 'px')
       }
-      if(t.setAttribute('style','width:1vw'), !t.style.width) r(),window.addEventListener('resize', r)
-  })(document.documentElement, document.createElement('div'), 750);
+      if (t.setAttribute('style', 'width:1vw'), !t.style.width) r(), window.addEventListener('resize', r)
+    })(document.documentElement, document.createElement('div'), 750);
   </script>
   <script>
-  try{window.serverVar=JSON.parse('{{SERVER_VAR}}')}catch(e){}
+    try { window.serverVar = JSON.parse('{{SERVER_VAR}}') } catch (e) { }
   </script>
-  </body>
+</body>
+
 </html>
