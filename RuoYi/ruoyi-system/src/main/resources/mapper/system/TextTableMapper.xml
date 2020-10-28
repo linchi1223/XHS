@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TextTableMapper">
+    
+    <resultMap type="TextTable" id="TextTableResult">
+        <result property="textid"    column="textid"    />
+        <result property="textname"    column="textname"    />
+        <result property="textcontent"    column="textcontent"    />
+        <result property="picture"    column="picture"    />
+        <result property="csid"    column="csid"    />
+        <result property="uptime"    column="uptime"    />
+        <result property="favor"    column="favor"    />
+        <result property="userid"    column="userid"    />
+    </resultMap>
+
+    <sql id="selectTextTableVo">
+        select textid, textname, textcontent, picture, csid, uptime, favor, userid from text_table
+    </sql>
+
+    <select id="selectTextTableList" parameterType="TextTable" resultMap="TextTableResult">
+        <include refid="selectTextTableVo"/>
+        <where>  
+            <if test="textname != null  and textname != ''"> and textname like concat('%', #{textname}, '%')</if>
+            <if test="textcontent != null  and textcontent != ''"> and textcontent = #{textcontent}</if>
+            <if test="picture != null  and picture != ''"> and picture = #{picture}</if>
+            <if test="csid != null "> and csid = #{csid}</if>
+            <if test="uptime != null "> and uptime = #{uptime}</if>
+            <if test="favor != null "> and favor = #{favor}</if>
+            <if test="userid != null "> and userid = #{userid}</if>
+        </where>
+    </select>
+    
+    <select id="selectTextTableById" parameterType="Long" resultMap="TextTableResult">
+        <include refid="selectTextTableVo"/>
+        where textid = #{textid}
+    </select>
+        
+    <insert id="insertTextTable" parameterType="TextTable" useGeneratedKeys="true" keyProperty="textid">
+        insert into text_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="textname != null and textname != ''">textname,</if>
+            <if test="textcontent != null and textcontent != ''">textcontent,</if>
+            <if test="picture != null and picture != ''">picture,</if>
+            <if test="csid != null">csid,</if>
+            <if test="uptime != null">uptime,</if>
+            <if test="favor != null">favor,</if>
+            <if test="userid != null">userid,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="textname != null and textname != ''">#{textname},</if>
+            <if test="textcontent != null and textcontent != ''">#{textcontent},</if>
+            <if test="picture != null and picture != ''">#{picture},</if>
+            <if test="csid != null">#{csid},</if>
+            <if test="uptime != null">#{uptime},</if>
+            <if test="favor != null">#{favor},</if>
+            <if test="userid != null">#{userid},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTextTable" parameterType="TextTable">
+        update text_table
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="textname != null and textname != ''">textname = #{textname},</if>
+            <if test="textcontent != null and textcontent != ''">textcontent = #{textcontent},</if>
+            <if test="picture != null and picture != ''">picture = #{picture},</if>
+            <if test="csid != null">csid = #{csid},</if>
+            <if test="uptime != null">uptime = #{uptime},</if>
+            <if test="favor != null">favor = #{favor},</if>
+            <if test="userid != null">userid = #{userid},</if>
+        </trim>
+        where textid = #{textid}
+    </update>
+
+    <delete id="deleteTextTableById" parameterType="Long">
+        delete from text_table where textid = #{textid}
+    </delete>
+
+    <delete id="deleteTextTableByIds" parameterType="String">
+        delete from text_table where textid in 
+        <foreach item="textid" collection="array" open="(" separator="," close=")">
+            #{textid}
+        </foreach>
+    </delete>
+
+</mapper>

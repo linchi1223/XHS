@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ClassifyTableMapper">
+    
+    <resultMap type="ClassifyTable" id="ClassifyTableResult">
+        <result property="csid"    column="csid"    />
+        <result property="cname"    column="cname"    />
+    </resultMap>
+
+    <sql id="selectClassifyTableVo">
+        select csid, cname from classify_table
+    </sql>
+
+    <select id="selectClassifyTableList" parameterType="ClassifyTable" resultMap="ClassifyTableResult">
+        <include refid="selectClassifyTableVo"/>
+        <where>  
+            <if test="cname != null  and cname != ''"> and cname like concat('%', #{cname}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectClassifyTableById" parameterType="Long" resultMap="ClassifyTableResult">
+        <include refid="selectClassifyTableVo"/>
+        where csid = #{csid}
+    </select>
+        
+    <insert id="insertClassifyTable" parameterType="ClassifyTable">
+        insert into classify_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="csid != null">csid,</if>
+            <if test="cname != null and cname != ''">cname,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="csid != null">#{csid},</if>
+            <if test="cname != null and cname != ''">#{cname},</if>
+         </trim>
+    </insert>
+
+    <update id="updateClassifyTable" parameterType="ClassifyTable">
+        update classify_table
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cname != null and cname != ''">cname = #{cname},</if>
+        </trim>
+        where csid = #{csid}
+    </update>
+
+    <delete id="deleteClassifyTableById" parameterType="Long">
+        delete from classify_table where csid = #{csid}
+    </delete>
+
+    <delete id="deleteClassifyTableByIds" parameterType="String">
+        delete from classify_table where csid in 
+        <foreach item="csid" collection="array" open="(" separator="," close=")">
+            #{csid}
+        </foreach>
+    </delete>
+
+</mapper>
