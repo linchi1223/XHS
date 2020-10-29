@@ -188,11 +188,18 @@
       <div class="logo Fleft"><img src="../assets/logo.png" alt="" /></div>
 
       <div class="info" v-if="!is_login">
-        <button class="btn btn-default Fright registe" type="submit">
+        <button
+          class="btn btn-default Fright register btn-outline-secondary"
+          type="submit"
+          @click="register()"
+        >
           注册
         </button>
-        <button class="btn btn-default Fright login" type="submit" @click="go">
-          <!-- <router-link to="/about">About</router-link> -->
+        <button
+          class="btn btn-default Fright login btn-outline-secondary"
+          type="submit"
+          @click="login()"
+        >
           登入
         </button>
       </div>
@@ -452,10 +459,14 @@ export default {
       this.data = [];
     },
     //登入
-    go() {
-      console.log(123);
+    login() {
       // this.$router.push("/lod");
       this.$router.push({ name: "Login", params: {} });
+    },
+    //注册
+    register() {
+      // this.$router.push("/lod");
+      this.$router.push({ name: "Register", params: {} });
     },
     // 设置列数
     switchCol(col) {
