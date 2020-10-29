@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.CommentTableMapper">
+    
+    <resultMap type="CommentTable" id="CommentTableResult">
+        <result property="commentid"    column="commentid"    />
+        <result property="userid"    column="userid"    />
+        <result property="textid"    column="textid"    />
+        <result property="comment"    column="comment"    />
+        <result property="time"    column="time"    />
+    </resultMap>
+
+    <sql id="selectCommentTableVo">
+        select commentid, userid, textid, comment, time from comment_table
+    </sql>
+
+    <select id="selectCommentTableList" parameterType="CommentTable" resultMap="CommentTableResult">
+        <include refid="selectCommentTableVo"/>
+        <where>  
+            <if test="userid != null "> and userid = #{userid}</if>
+            <if test="textid != null "> and textid = #{textid}</if>
+            <if test="comment != null  and comment != ''"> and comment = #{comment}</if>
+            <if test="time != null "> and time = #{time}</if>
+        </where>
+    </select>
+    
+    <select id="selectCommentTableById" parameterType="Long" resultMap="CommentTableResult">
+        <include refid="selectCommentTableVo"/>
+        where commentid = #{commentid}
+    </select>
+        
+    <insert id="insertCommentTable" parameterType="CommentTable" useGeneratedKeys="true" keyProperty="commentid">
+        insert into comment_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userid != null">userid,</if>
+            <if test="textid != null">textid,</if>
+            <if test="comment != null and comment != ''">comment,</if>
+            <if test="time != null">time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userid != null">#{userid},</if>
+            <if test="textid != null">#{textid},</if>
+            <if test="comment != null and comment != ''">#{comment},</if>
+            <if test="time != null">#{time},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCommentTable" parameterType="CommentTable">
+        update comment_table
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userid != null">userid = #{userid},</if>
+            <if test="textid != null">textid = #{textid},</if>
+            <if test="comment != null and comment != ''">comment = #{comment},</if>
+            <if test="time != null">time = #{time},</if>
+        </trim>
+        where commentid = #{commentid}
+    </update>
+
+    <delete id="deleteCommentTableById" parameterType="Long">
+        delete from comment_table where commentid = #{commentid}
+    </delete>
+
+    <delete id="deleteCommentTableByIds" parameterType="String">
+        delete from comment_table where commentid in 
+        <foreach item="commentid" collection="array" open="(" separator="," close=")">
+            #{commentid}
+        </foreach>
+    </delete>
+
+</mapper>

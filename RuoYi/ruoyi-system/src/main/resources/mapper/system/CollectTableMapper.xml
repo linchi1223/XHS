@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.CollectTableMapper">
+    
+    <resultMap type="CollectTable" id="CollectTableResult">
+        <result property="collid"    column="collid"    />
+        <result property="userid"    column="userid"    />
+        <result property="textid"    column="textid"    />
+    </resultMap>
+
+    <sql id="selectCollectTableVo">
+        select collid, userid, textid from collect_table
+    </sql>
+
+    <select id="selectCollectTableList" parameterType="CollectTable" resultMap="CollectTableResult">
+        <include refid="selectCollectTableVo"/>
+        <where>  
+            <if test="userid != null "> and userid = #{userid}</if>
+            <if test="textid != null "> and textid = #{textid}</if>
+        </where>
+    </select>
+    
+    <select id="selectCollectTableById" parameterType="Long" resultMap="CollectTableResult">
+        <include refid="selectCollectTableVo"/>
+        where collid = #{collid}
+    </select>
+        
+    <insert id="insertCollectTable" parameterType="CollectTable" useGeneratedKeys="true" keyProperty="collid">
+        insert into collect_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userid != null">userid,</if>
+            <if test="textid != null">textid,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userid != null">#{userid},</if>
+            <if test="textid != null">#{textid},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCollectTable" parameterType="CollectTable">
+        update collect_table
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userid != null">userid = #{userid},</if>
+            <if test="textid != null">textid = #{textid},</if>
+        </trim>
+        where collid = #{collid}
+    </update>
+
+    <delete id="deleteCollectTableById" parameterType="Long">
+        delete from collect_table where collid = #{collid}
+    </delete>
+
+    <delete id="deleteCollectTableByIds" parameterType="String">
+        delete from collect_table where collid in 
+        <foreach item="collid" collection="array" open="(" separator="," close=")">
+            #{collid}
+        </foreach>
+    </delete>
+
+</mapper>

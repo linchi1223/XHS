@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FavorTableMapper">
+    
+    <resultMap type="FavorTable" id="FavorTableResult">
+        <result property="favorid"    column="favorid"    />
+        <result property="userid"    column="userid"    />
+        <result property="textid"    column="textid"    />
+    </resultMap>
+
+    <sql id="selectFavorTableVo">
+        select favorid, userid, textid from favor_table
+    </sql>
+
+    <select id="selectFavorTableList" parameterType="FavorTable" resultMap="FavorTableResult">
+        <include refid="selectFavorTableVo"/>
+        <where>  
+            <if test="userid != null "> and userid = #{userid}</if>
+            <if test="textid != null "> and textid = #{textid}</if>
+        </where>
+    </select>
+    
+    <select id="selectFavorTableById" parameterType="Long" resultMap="FavorTableResult">
+        <include refid="selectFavorTableVo"/>
+        where favorid = #{favorid}
+    </select>
+        
+    <insert id="insertFavorTable" parameterType="FavorTable" useGeneratedKeys="true" keyProperty="favorid">
+        insert into favor_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userid != null">userid,</if>
+            <if test="textid != null">textid,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userid != null">#{userid},</if>
+            <if test="textid != null">#{textid},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFavorTable" parameterType="FavorTable">
+        update favor_table
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userid != null">userid = #{userid},</if>
+            <if test="textid != null">textid = #{textid},</if>
+        </trim>
+        where favorid = #{favorid}
+    </update>
+
+    <delete id="deleteFavorTableById" parameterType="Long">
+        delete from favor_table where favorid = #{favorid}
+    </delete>
+
+    <delete id="deleteFavorTableByIds" parameterType="String">
+        delete from favor_table where favorid in 
+        <foreach item="favorid" collection="array" open="(" separator="," close=")">
+            #{favorid}
+        </foreach>
+    </delete>
+
+</mapper>

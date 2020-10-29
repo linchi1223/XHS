@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.UserTableMapper">
+    
+    <resultMap type="UserTable" id="UserTableResult">
+        <result property="userid"    column="userid"    />
+        <result property="username"    column="username"    />
+        <result property="password"    column="password"    />
+        <result property="level"    column="level"    />
+    </resultMap>
+
+    <sql id="selectUserTableVo">
+        select userid, username, password, level from user_table
+    </sql>
+
+    <select id="selectUserTableList" parameterType="UserTable" resultMap="UserTableResult">
+        <include refid="selectUserTableVo"/>
+        <where>  
+            <if test="userid != null "> and userid = #{userid}</if>
+            <if test="username != null  and username != ''"> and username like concat('%', #{username}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectUserTableById" parameterType="Long" resultMap="UserTableResult">
+        <include refid="selectUserTableVo"/>
+        where userid = #{userid}
+    </select>
+        
+    <insert id="insertUserTable" parameterType="UserTable" useGeneratedKeys="true" keyProperty="userid">
+        insert into user_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null and username != ''">username,</if>
+            <if test="password != null and password != ''">password,</if>
+            <if test="level != null">level,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="username != null and username != ''">#{username},</if>
+            <if test="password != null and password != ''">#{password},</if>
+            <if test="level != null">#{level},</if>
+         </trim>
+    </insert>
+
+    <update id="updateUserTable" parameterType="UserTable">
+        update user_table
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="username != null and username != ''">username = #{username},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="level != null">level = #{level},</if>
+        </trim>
+        where userid = #{userid}
+    </update>
+
+    <delete id="deleteUserTableById" parameterType="Long">
+        delete from user_table where userid = #{userid}
+    </delete>
+
+    <delete id="deleteUserTableByIds" parameterType="String">
+        delete from user_table where userid in 
+        <foreach item="userid" collection="array" open="(" separator="," close=")">
+            #{userid}
+        </foreach>
+    </delete>
+
+</mapper>

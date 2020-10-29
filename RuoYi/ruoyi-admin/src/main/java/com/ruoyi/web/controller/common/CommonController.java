@@ -31,13 +31,13 @@ public class CommonController
 
     @Autowired
     private ServerConfig serverConfig;
-
     /**
      * 通用下载请求
      * 
      * @param fileName 文件名称
      * @param delete 是否删除
      */
+
     @GetMapping("common/download")
     public void fileDownload(String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request)
     {
