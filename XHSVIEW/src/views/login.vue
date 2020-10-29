@@ -82,7 +82,7 @@ export default {
 (function () {});
 </script>
 
-<style>
+<style scoped>
 .bg {
   position: fixed;
   width: 100%;

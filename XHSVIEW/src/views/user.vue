@@ -6,9 +6,12 @@
           class="username"
           style="
             float: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
             line-height: 60px;
-            display: line-block;
             margin-left: 25px;
+            width: 500px;
+            height:50px
           "
         >
           用户名
@@ -208,7 +211,7 @@
 export default {};
 </script>
 
-<style>
+<style scoped>
 .items {
   height: 100%;
   overflow: scroll;

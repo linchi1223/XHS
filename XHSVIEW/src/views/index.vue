@@ -1,4 +1,4 @@
-<style lang="scss">
+<style  lang="scss" scoped>
 * {
   margin: 0;
 }
@@ -128,13 +128,13 @@
     color: #f0f0f0;
     border: 0px;
     width: 100px;
+    font-weight: 400;
     margin: 15px 10px;
     height: 50px;
     opacity: 1;
     z-index: 900;
   }
   button:hover {
-    color: #fff;
     transform: translateY(-1px);
     box-shadow: 2px 2px 10px #333;
     background-color: rgba($color: #000, $alpha: 0.7) !important;
@@ -189,14 +189,14 @@
 
       <div class="info" v-if="!is_login">
         <button
-          class="btn btn-default Fright register btn-outline-secondary"
+          class="btn  Fright register "
           type="submit"
           @click="register()"
         >
           注册
         </button>
         <button
-          class="btn btn-default Fright login btn-outline-secondary"
+          class="btn  Fright login "
           type="submit"
           @click="login()"
         >

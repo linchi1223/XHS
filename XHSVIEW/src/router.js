@@ -12,7 +12,7 @@ const router = new Router({
     routes: [
         {
             path: '/',
-            redirect: '/user'
+            redirect: '/comment'
         },
         {
             path: '/login',
