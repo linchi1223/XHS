@@ -23,11 +23,11 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * 文章标签管理Controller
  * 
  * @author zsh
- * @date 2020-10-25
+ * @date 2020-10-29
  */
 @Controller
 @RequestMapping("/system/classify_control")
-public class  ClassifyTableController extends BaseController
+public class ClassifyTableController extends BaseController
 {
     private String prefix = "system/classify_control";
 

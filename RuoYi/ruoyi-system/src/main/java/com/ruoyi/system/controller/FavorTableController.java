@@ -1,8 +1,15 @@
 package com.ruoyi.system.controller;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.TextTable;
+import com.ruoyi.system.domain.UserTable;
+import com.ruoyi.system.service.ITextTableService;
+import com.ruoyi.system.service.IUserTableService;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +40,10 @@ public class FavorTableController extends BaseController
 
     @Autowired
     private IFavorTableService favorTableService;
+    @Autowired
+    private ITextTableService textTableService;
+    @Autowired
+    private IUserTableService userTableService;
 
     @RequiresPermissions("system:favor_control:view")
     @GetMapping()
@@ -72,8 +83,12 @@ public class FavorTableController extends BaseController
      * 新增用户点赞管理
      */
     @GetMapping("/add")
-    public String add()
+    public String add(UserTable userTable, TextTable textTable, ModelMap mmap)
     {
+        List<UserTable> userTables = userTableService.selectUserTableList(userTable);
+        List<TextTable> textTables = textTableService.selectTextTableList(textTable);
+        mmap.put("user_list",userTables);
+        mmap.put("text_list",textTables);
         return prefix + "/add";
     }
 

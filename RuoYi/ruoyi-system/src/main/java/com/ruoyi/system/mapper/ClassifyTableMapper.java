@@ -7,7 +7,7 @@ import com.ruoyi.system.domain.ClassifyTable;
  * 文章标签管理Mapper接口
  * 
  * @author zsh
- * @date 2020-10-25
+ * @date 2020-10-29
  */
 public interface ClassifyTableMapper 
 {
