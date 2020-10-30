@@ -5,6 +5,7 @@ import Index from './views/index.vue'
 import User from './views/user.vue'
 import Comment from './views/comment.vue'
 import Register from './views/register.vue'
+import Upcontent from './views/upcontent.vue'
 // import App from 'App.vue'
 Vue.use(Router)
 
@@ -12,7 +13,7 @@ const router = new Router({
     routes: [
         {
             path: '/',
-            redirect: '/comment'
+            redirect: '/index'
         },
         {
             path: '/login',
@@ -35,10 +36,16 @@ const router = new Router({
             component: User
         },
         {
+            path: '/upcontent',
+            name: 'Upcontent',
+            component: Upcontent
+        },
+        {
             path: '/comment',
             name: 'Comment',
             component: Comment
         },
+  
     ]
 })
 

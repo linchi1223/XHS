@@ -146,6 +146,8 @@
   height: 80px;
   position: fixed;
   width: 100%;
+  cursor: pointer;
+ 
 }
 .headerbg {
   width: 100%;
@@ -178,8 +180,13 @@
 .username {
   line-height: 80px;
   size: 20px;
+   margin-right: 15px;
+
 }
 .userimg {
+  line-height: 80px;
+  margin-top: 15px;
+  margin-right: 15px;
 }
 </style>
 <template>
@@ -188,26 +195,20 @@
       <div class="logo Fleft"><img src="../assets/logo.png" alt="" /></div>
 
       <div class="info" v-if="!is_login">
-        <button
-          class="btn  Fright register "
-          type="submit"
-          @click="register()"
-        >
+        <button class="btn Fright register" type="submit" @click="register()">
           注册
         </button>
-        <button
-          class="btn  Fright login "
-          type="submit"
-          @click="login()"
-        >
+        <button class="btn Fright login" type="submit" @click="login()">
           登入
         </button>
       </div>
 
-      <div class="info" v-if="is_login">
-        <div class="userimg Fright"><img src="../assets/logo.png" /></div>
+      <div class="info" v-if="is_login" @click="user()">
         <div class="username Fright">
           {{ username }}测试名字山东分局啊收快递放假啊熵
+        </div>
+        <div class="userimg Fright">
+          <el-avatar> User </el-avatar>
         </div>
       </div>
       <div class="headerbg">
@@ -221,7 +222,12 @@
       style="width: 90%; margin: auto; padding-top: 80px"
     >
       <template>
-        <div class="cell-item" :key="index" v-for="(item, index) in data">
+        <div
+          class="cell-item"
+          :key="index"
+          v-for="(item, index) in data"
+          @click="comments(index)"
+        >
           <img v-if="item.img" :src="item.img" alt="加载错误" />
           <div class="item-body">
             <div class="item-desc">{{ item.title }}</div>
@@ -258,7 +264,7 @@ export default {
     return {
       data: [],
       col: 4,
-      is_login: false,
+      is_login: true,
       username: "",
       loading: false,
       gitHubData: {},
@@ -468,20 +474,28 @@ export default {
       // this.$router.push("/lod");
       this.$router.push({ name: "Register", params: {} });
     },
+    // 页面跳转
+    comments(id) {
+      // console.log(1)
+      this.$router.push({ name: "Comment", params: {} });
+    },
+    user(){
+      this.$router.push({ name: "User", params: {} });
+    },
     // 设置列数
     switchCol(col) {
       this.col = col;
     },
-    // 获取gethub的瀑布流
-    getGitHub() {
-      fetch("https://api.github.com/repos/AwesomeDevin/vue-waterfall2").then(
-        (data) => {
-          data.json().then((res) => {
-            this.gitHubData = res;
-          });
-        }
-      );
-    },
+    // // 获取gethub的瀑布流
+    // getGitHub() {
+    //   fetch("https://api.github.com/repos/AwesomeDevin/vue-waterfall2").then(
+    //     (data) => {
+    //       data.json().then((res) => {
+    //         this.gitHubData = res;
+    //       });
+    //     }
+    //   );
+    // },
     // 加载更多
     loadmore(num) {
       this.loading = true;
@@ -944,7 +958,7 @@ export default {
         like: "953",
       },
     ];
-    this.getGitHub();
+    // this.getGitHub();
     // this.data = []
   },
 };
