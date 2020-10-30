@@ -9,10 +9,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="username"    column="username"    />
         <result property="password"    column="password"    />
         <result property="level"    column="level"    />
+        <result property="picture"    column="picture"    />
+        <result property="phone"    column="phone"    />
     </resultMap>
 
     <sql id="selectUserTableVo">
-        select userid, username, password, level from user_table
+        select userid, username, password, level, picture, phone from user_table
     </sql>
 
     <select id="selectUserTableList" parameterType="UserTable" resultMap="UserTableResult">
@@ -20,12 +22,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="userid != null "> and userid = #{userid}</if>
             <if test="username != null  and username != ''"> and username like concat('%', #{username}, '%')</if>
+            <if test="picture != null  and picture != ''"> and picture = #{picture}</if>
+            <if test="phone != null "> and phone = #{phone}</if>
         </where>
     </select>
     
     <select id="selectUserTableById" parameterType="Long" resultMap="UserTableResult">
         <include refid="selectUserTableVo"/>
         where userid = #{userid}
+    </select>
+
+    <select id="selectUserTableByUserName" parameterType="String" resultMap="UserTableResult">
+        <include refid="selectUserTableVo"/>
+        where username = #{username}
     </select>
         
     <insert id="insertUserTable" parameterType="UserTable" useGeneratedKeys="true" keyProperty="userid">
@@ -34,11 +43,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="username != null and username != ''">username,</if>
             <if test="password != null and password != ''">password,</if>
             <if test="level != null">level,</if>
+            <if test="picture != null">picture,</if>
+            <if test="phone != null">phone,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="username != null and username != ''">#{username},</if>
             <if test="password != null and password != ''">#{password},</if>
             <if test="level != null">#{level},</if>
+            <if test="picture != null">#{picture},</if>
+            <if test="phone != null">#{phone},</if>
          </trim>
     </insert>
 
@@ -48,6 +61,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="username != null and username != ''">username = #{username},</if>
             <if test="password != null and password != ''">password = #{password},</if>
             <if test="level != null">level = #{level},</if>
+            <if test="picture != null">picture = #{picture},</if>
+            <if test="phone != null">phone = #{phone},</if>
         </trim>
         where userid = #{userid}
     </update>

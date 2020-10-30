@@ -19,6 +19,10 @@
                                 <input type="text" name="username"/>
                             </li>
                             <li>
+                                <label>用户手机号：</label>
+                                <input type="text" name="phone"/>
+                            </li>
+                            <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
                             </li>
@@ -66,10 +70,10 @@
                 {
                     field: 'userid',
                     title: '用户id',
-                    visible: true
+                    visible: false
                 },
                 {
-                    field: 'username', 
+                    field: 'username',
                     title: '用户名'
                 },
                 {
@@ -79,6 +83,14 @@
                 {
                     field: 'level',
                     title: '用户类型'
+                },
+                {
+                    field: 'picture',
+                    title: '用户头像'
+                },
+                {
+                    field: 'phone',
+                    title: '用户手机号'
                 },
                 {
                     title: '操作',

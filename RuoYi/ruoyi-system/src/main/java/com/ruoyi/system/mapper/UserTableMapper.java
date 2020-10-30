@@ -7,7 +7,7 @@ import com.ruoyi.system.domain.UserTable;
  * 普通用户管理Mapper接口
  * 
  * @author zsh
- * @date 2020-10-28
+ * @date 2020-10-30
  */
 public interface UserTableMapper 
 {
@@ -58,4 +58,13 @@ public interface UserTableMapper
      * @return 结果
      */
     public int deleteUserTableByIds(String[] userids);
+
+    /**
+     *
+     * 根据用户名称获取用户
+     *
+     * @param username 需要查询的用户名称
+     * @return 结果
+     */
+    public UserTable selectUserTableByUserName(String username);
 }
