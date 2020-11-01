@@ -62,8 +62,10 @@ public class TextTableController extends BaseController
     @RequiresPermissions("system:text_control:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(TextTable textTable)
+    public TableDataInfo list(TextTable textTable,ClassifyTable classifyTable,ModelMap mmap)
     {
+        List<ClassifyTable> classifyTables = classifyTableService.selectClassifyTableList(classifyTable);
+        mmap.put("classify_list",classifyTables);
         startPage();
         List<TextTable> list = textTableService.selectTextTableList(textTable);
         return getDataTable(list);

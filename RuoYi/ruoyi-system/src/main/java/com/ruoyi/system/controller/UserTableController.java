@@ -133,11 +133,11 @@ public class UserTableController extends BaseController
      *
     *登录验证
     * */
-    @GetMapping("/login/vailtify")
+    @GetMapping("/login/verify")
     @ResponseBody
     public String Login(String username,String password){
         JSONObject json = new JSONObject();
-        UserTable quereUser = userTableService.selectUserTableByUserName("2");
+        UserTable quereUser = userTableService.selectUserTableByUserName(username);
         if (quereUser != null) {
             return "success";
         }
