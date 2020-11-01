@@ -7,7 +7,7 @@ import com.ruoyi.system.domain.UserTable;
  * 普通用户管理Service接口
  * 
  * @author zsh
- * @date 2020-10-28
+ * @date 2020-10-30
  */
 public interface IUserTableService 
 {
@@ -58,4 +58,13 @@ public interface IUserTableService
      * @return 结果
      */
     public int deleteUserTableById(Long userid);
+
+    /**
+     *
+     * 根据用户名称获取用户
+     *
+     * @param username 需要查询的用户名称
+     * @return 结果
+     */
+    public UserTable selectUserTableByUserName(String username);
 }

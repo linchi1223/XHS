@@ -9,7 +9,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 普通用户管理对象 user_table
  * 
  * @author zsh
- * @date 2020-10-28
+ * @date 2020-10-30
  */
 public class UserTable extends BaseEntity
 {
@@ -30,6 +30,14 @@ public class UserTable extends BaseEntity
     /** 用户类型 */
     @Excel(name = "用户类型")
     private Long level;
+
+    /** 用户头像 */
+    @Excel(name = "用户头像")
+    private String picture;
+
+    /** 用户手机号 */
+    @Excel(name = "用户手机号")
+    private Long phone;
 
     public void setUserid(Long userid) 
     {
@@ -67,6 +75,24 @@ public class UserTable extends BaseEntity
     {
         return level;
     }
+    public void setPicture(String picture) 
+    {
+        this.picture = picture;
+    }
+
+    public String getPicture() 
+    {
+        return picture;
+    }
+    public void setPhone(Long phone) 
+    {
+        this.phone = phone;
+    }
+
+    public Long getPhone() 
+    {
+        return phone;
+    }
 
     @Override
     public String toString() {
@@ -75,6 +101,8 @@ public class UserTable extends BaseEntity
             .append("username", getUsername())
             .append("password", getPassword())
             .append("level", getLevel())
+            .append("picture", getPicture())
+            .append("phone", getPhone())
             .toString();
     }
 }

@@ -10,7 +10,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 文章管理对象 text_table
  * 
  * @author zsh
- * @date 2020-10-25
+ * @date 2020-10-29
  */
 public class TextTable extends BaseEntity
 {

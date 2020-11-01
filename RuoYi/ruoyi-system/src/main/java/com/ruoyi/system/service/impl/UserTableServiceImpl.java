@@ -12,7 +12,7 @@ import com.ruoyi.common.core.text.Convert;
  * 普通用户管理Service业务层处理
  * 
  * @author zsh
- * @date 2020-10-28
+ * @date 2020-10-30
  */
 @Service
 public class UserTableServiceImpl implements IUserTableService 
@@ -90,5 +90,16 @@ public class UserTableServiceImpl implements IUserTableService
     public int deleteUserTableById(Long userid)
     {
         return userTableMapper.deleteUserTableById(userid);
+    }
+
+    /**
+     *
+     * 根据用户名称获取用户
+     *
+     * @param username 需要查询的用户名称
+     * @return 结果
+     */
+    public UserTable selectUserTableByUserName(String username){
+        return userTableMapper.selectUserTableByUserName(username);
     }
 }

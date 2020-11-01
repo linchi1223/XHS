@@ -16,10 +16,7 @@
                             </li>
                             <li>
                                 <label>分类号：</label>
-                                <select name="csid" th:with="type=${@dict.getType('science_type')}">
-                                    <option value="">所有</option>
-                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                                </select>
+                                <input type="text" name="csid"/>
                             </li>
                             <li class="select-time">
                                 <label>上传时间：</label>
@@ -67,9 +64,10 @@
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('system:text_control:edit')}]];
         var removeFlag = [[${@permission.hasPermi('system:text_control:remove')}]];
-        var csidDatas = [[${@dict.getType('science_type')}]];
         var prefix = ctx + "system/text_control";
-
+        var userlist = [[${classify_list}]]
+        for (var i = 0;i<userlist.length;++i)
+            console.log(userlist[i].cname);
         $(function() {
             var options = {
                 url: prefix + "/list",
@@ -100,10 +98,7 @@
                 },
                 {
                     field: 'csid',
-                    title: '分类号',
-                    formatter: function(value, row, index) {
-                       return $.table.selectDictLabel(csidDatas, value);
-                    }
+                    title: '分类号'
                 },
                 {
                     field: 'uptime',

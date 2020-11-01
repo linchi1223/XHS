@@ -3,11 +3,13 @@ package com.ruoyi.system.controller;
 import java.util.List;
 
 import com.ruoyi.system.domain.ClassifyTable;
-import com.ruoyi.system.domain.FavorTable;
+import com.ruoyi.system.domain.UserTable;
 import com.ruoyi.system.service.IClassifyTableService;
-import com.ruoyi.system.service.IFavorTableService;
+import com.ruoyi.system.service.IUserTableService;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,22 +30,29 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * 文章管理Controller
  * 
  * @author zsh
- * @date 2020-10-25
+ * @date 2020-10-29
  */
 @Controller
 @RequestMapping("/system/text_control")
 public class TextTableController extends BaseController
 {
     private String prefix = "system/text_control";
-    @Autowired
-    private IClassifyTableService classifyTableService;
+
     @Autowired
     private ITextTableService textTableService;
+    @Autowired
+    private IUserTableService userTableService;
+    @Autowired
+    private IClassifyTableService classifyTableService;
 
     @RequiresPermissions("system:text_control:view")
     @GetMapping()
-    public String text_control()
+    public String text_control(UserTable userTable,ClassifyTable classifyTable,ModelMap mmap)
     {
+        List<UserTable> userTables = userTableService.selectUserTableList(userTable);
+        List<ClassifyTable> classifyTables = classifyTableService.selectClassifyTableList(classifyTable);
+        mmap.put("user_list",userTables);
+        mmap.put("classify_list",classifyTables);
         return prefix + "/text_control";
     }
 
@@ -78,10 +87,12 @@ public class TextTableController extends BaseController
      * 新增文章管理
      */
     @GetMapping("/add")
-    public String add(ModelMap mmap, ClassifyTable classifyTable)
+    public String add(ModelMap mmap, UserTable userTable, ClassifyTable classifyTable)
     {
+        List<UserTable> userTables = userTableService.selectUserTableList(userTable);
         List<ClassifyTable> classifyTables = classifyTableService.selectClassifyTableList(classifyTable);
-        mmap.put("classifytable", classifyTables);
+        mmap.put("user_list",userTables);
+        mmap.put("classify_list",classifyTables);
         return prefix + "/add";
     }
 
@@ -94,8 +105,6 @@ public class TextTableController extends BaseController
     @ResponseBody
     public AjaxResult addSave(TextTable textTable)
     {
-
-        logger.info(textTable.toString());
         return toAjax(textTableService.insertTextTable(textTable));
     }
 
@@ -103,14 +112,16 @@ public class TextTableController extends BaseController
      * 修改文章管理
      */
     @GetMapping("/edit/{textid}")
-    public String edit(@PathVariable("textid") Long textid, ModelMap mmap)
+    public String edit(@PathVariable("textid") Long textid, ModelMap mmap, UserTable userTable,ClassifyTable classifyTable)
     {
         TextTable textTable = textTableService.selectTextTableById(textid);
+        List<UserTable> userTables = userTableService.selectUserTableList(userTable);
+        List<ClassifyTable> classifyTables = classifyTableService.selectClassifyTableList(classifyTable);
+        mmap.put("user_list",userTables);
+        mmap.put("classify_list",classifyTables);
         mmap.put("textTable", textTable);
         return prefix + "/edit";
     }
-
-
 
     /**
      * 修改保存文章管理
@@ -133,14 +144,6 @@ public class TextTableController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
-        if(delectfavor(ids))
-            return toAjax(textTableService.deleteTextTableByIds(ids));
-        else{
-            System.out.println("error!!!favor has exciting!!!");
-            return AjaxResult.error();
-        }
-    }
-    public boolean delectfavor(String id){
-        return true;
+        return toAjax(textTableService.deleteTextTableByIds(ids));
     }
 }

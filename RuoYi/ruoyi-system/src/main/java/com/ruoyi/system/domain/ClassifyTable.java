@@ -9,7 +9,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 文章标签管理对象 classify_table
  * 
  * @author zsh
- * @date 2020-10-25
+ * @date 2020-10-29
  */
 public class ClassifyTable extends BaseEntity
 {

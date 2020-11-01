@@ -1,6 +1,9 @@
 package com.ruoyi.system.controller;
 
 import java.util.List;
+
+import com.ruoyi.common.json.JSON;
+import com.ruoyi.common.json.JSONObject;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,11 +22,13 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
+import javax.jws.soap.SOAPBinding;
+
 /**
  * 普通用户管理Controller
  * 
  * @author zsh
- * @date 2020-10-28
+ * @date 2020-10-30
  */
 @Controller
 @RequestMapping("/system/commen_control")
@@ -122,5 +127,29 @@ public class UserTableController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(userTableService.deleteUserTableByIds(ids));
+    }
+
+    /**
+     *
+    *登录验证
+    * */
+    @GetMapping("/login/vailtify")
+    @ResponseBody
+    public String Login(String username,String password){
+        JSONObject json = new JSONObject();
+        UserTable quereUser = userTableService.selectUserTableByUserName("2");
+        if (quereUser != null) {
+            return "success";
+        }
+        else return "null";
+    }
+    @GetMapping("/register")
+    @ResponseBody
+    public String Register(UserTable userTable){
+        int flag = userTableService.insertUserTable(userTable);
+        if (flag == 1) {
+            return "success";
+        }
+        else return "error";
     }
 }
