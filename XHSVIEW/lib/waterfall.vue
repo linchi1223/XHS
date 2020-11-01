@@ -1,4 +1,4 @@
-<style>
+<style scoped>
 	.vue-waterfall{
 		width:100%;
 		overflow: hidden;

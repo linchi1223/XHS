@@ -6,14 +6,17 @@
           class="username"
           style="
             float: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
             line-height: 60px;
-            display: line-block;
             margin-left: 25px;
+            width: 500px;
+            height:50px
           "
         >
           用户名
         </h1>
-        <button class="btn btn-defult btnn">发布</button>
+        <button class="btn btn-defult btnn" @click="fabu()">发布</button>
       </div>
       <hr />
       <div class="items">
@@ -205,10 +208,22 @@
 </template>
 
 <script>
-export default {};
+export default {
+   data() {
+    return {
+      followed: false,
+      textarea:''
+    };
+  },
+  methods: {
+    fabu(){
+        this.$router.push({ name: "Upcontent", params: {} });
+    }
+  },
+};
 </script>
 
-<style>
+<style scoped>
 .items {
   height: 100%;
   overflow: scroll;

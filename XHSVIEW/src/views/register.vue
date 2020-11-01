@@ -75,7 +75,7 @@ export default {
 (function () {});
 </script>
 
-<style>
+<style scoped>
 .bg {
   position: fixed;
   width: 100%;
@@ -105,7 +105,6 @@ input {
 .btn {
   width: 100%;
   margin: 10px 0;
-  font-size: 20px;
 }
 .login {
   background-color: tomato;
