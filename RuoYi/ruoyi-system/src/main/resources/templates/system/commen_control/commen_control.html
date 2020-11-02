@@ -82,7 +82,10 @@
                 },
                 {
                     field: 'level',
-                    title: '用户类型'
+                    title: '用户类型',
+                    formatter:function (value,row,index) {
+                        return "普通用户";
+                    }
                 },
                 {
                     field: 'picture',

@@ -69,15 +69,7 @@
         var removeFlag = [[${@permission.hasPermi('system:text_control:remove')}]];
         var prefix = ctx + "system/text_control";
         var classify_list = [[${classify_list}]]
-        var userlist = [[${classify_list}]]
-        console.log(classify_list)
-        for (var i = 0;i<userlist.length;++i)
-            console.log(userlist[i].cname);
-
-        // $(function () {
-        //     var text1 = $('.classname').text()
-        //     console.log(text1)
-        // })
+        var user_list = [[${user_list}]]
         $(function() {
             var options = {
                 url: prefix + "/list",
@@ -110,10 +102,9 @@
                     field: 'csid',
                     title: '分类名',
                     formatter:function(value, row, index) {
-                        console.log(value);
-                        for (var i = 0;i<userlist.length;++i)
-                            if(value == userlist[i].csid)
-                                return userlist[i].cname;
+                        for (var i = 0;i<classify_list.length;++i)
+                            if(value == classify_list[i].csid)
+                                return classify_list[i].cname;
                         return value;
                     }
                 },
@@ -127,7 +118,14 @@
                 },
                 {
                     field: 'userid',
-                    title: '用户id'
+                    title: '用户名',
+                    formatter:function(value, row, index) {
+                        console.log(value)
+                        for (var i = 0;i<user_list.length;++i)
+                            if(value == user_list[i].userid)
+                                return user_list[i].username;
+                        return value;
+                    }
                 },
                 {
                     title: '操作',
@@ -141,7 +139,7 @@
                 }]
             };
             $.table.init(options);
-        });s
+        });
     </script>
 </body>
 </html>

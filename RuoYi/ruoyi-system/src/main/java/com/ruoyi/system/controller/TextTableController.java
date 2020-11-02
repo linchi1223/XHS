@@ -3,8 +3,10 @@ package com.ruoyi.system.controller;
 import java.util.List;
 
 import com.ruoyi.system.domain.ClassifyTable;
+import com.ruoyi.system.domain.CommentTable;
 import com.ruoyi.system.domain.UserTable;
 import com.ruoyi.system.service.IClassifyTableService;
+import com.ruoyi.system.service.IFavorTableService;
 import com.ruoyi.system.service.IUserTableService;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -44,6 +46,8 @@ public class TextTableController extends BaseController
     private IUserTableService userTableService;
     @Autowired
     private IClassifyTableService classifyTableService;
+    @Autowired
+    private IFavorTableService favorTableService;
 
     @RequiresPermissions("system:text_control:view")
     @GetMapping()
@@ -62,9 +66,11 @@ public class TextTableController extends BaseController
     @RequiresPermissions("system:text_control:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(TextTable textTable,ClassifyTable classifyTable,ModelMap mmap)
+    public TableDataInfo list(TextTable textTable, ClassifyTable classifyTable, ModelMap mmap, UserTable userTable)
     {
         List<ClassifyTable> classifyTables = classifyTableService.selectClassifyTableList(classifyTable);
+        List<UserTable> userTables = userTableService.selectUserTableList(userTable);
+        mmap.put("user_list",userTables);
         mmap.put("classify_list",classifyTables);
         startPage();
         List<TextTable> list = textTableService.selectTextTableList(textTable);
