@@ -9,8 +9,9 @@ import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios'
 import App from './App.vue'
 
-axios.defaults.baseURL = "http://192.168.31.121"
-
+axios.defaults.baseURL = "http://192.168.46.171"
+Vue.prototype.axios = axios
+Vue.prototype.$ajax = axios
 Vue.use(waterfall)
 Vue.use(ElementUI);
 

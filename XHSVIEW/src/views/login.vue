@@ -38,8 +38,8 @@ export default {
     return {
       loginForm: [
         {
-          username: "123",
-          userpd: "123",
+          username: "admin",
+          userpd: "admin",
         },
       ],
       loginFormRules: [
@@ -59,20 +59,27 @@ export default {
   },
   methods: {
     login() {
+      this.$ajax.post("http://192.168.46.177:8080/system/commen_control/login/verify", this.loginForm).then((res) => {
+        this.result = res.data;
+      });
       // 测试部分
       // console.log(1);
-      var status = 200;
-      var toten ="123"
-      window.sessionStorage.setItem("token", toten);
+      // var status = 200;
+      // var toten ="123"
+      // window.sessionStorage.setItem("token", toten);
       // 真实数据
-      // const {data:res} =this.$http.post('login',this.loginForm)
+      // const { data: res } = this.$http.post(
+      //   "http://192.168.46.177:8080/system/commen_control/login/verify",
+      //   this.loginForm
+      // );
+      // console.log(res);
       // if(res.meta.status !== 200)return console.log('登入失败')
       // if (status !== 200) return console.log("登入失败");
-      console.log("login");
+      // console.log("login");
       // window.sessionStorage.setItem("token", res.data.toten);
-      this.$router.push("/index");
+      // this.$router.push("/index");
     },
-     //注册
+    //注册
     register() {
       // this.$router.push("/lod");
       this.$router.push({ name: "Register", params: {} });
@@ -112,7 +119,6 @@ input {
 .btn {
   width: 100%;
   margin: 10px 0;
-
 }
 .login {
   background-color: tomato;

@@ -10,7 +10,7 @@ function getModuleName(module) {
   var signIndex = module.resource.indexOf(sign);
   var pathSeparator = module.resource.slice(signIndex - 1, signIndex);
   var modulePath = module.resource.substring(signIndex + sign.length + 1);
-  var moduleName = modulePath.substring(0, modulePath.indexOf(pathSeparator) );
+  var moduleName = modulePath.substring(0, modulePath.indexOf(pathSeparator));
   moduleName = moduleName.toLowerCase();
 
   return moduleName
@@ -25,8 +25,8 @@ let chunksPackage = {
 
 
 module.exports = {
-  entry:{ 
-    app:'./src/main.js',
+  entry: {
+    app: './src/main.js',
     // vendor:['vue','vue-waterfall2'],
   },
   output: {
@@ -42,7 +42,7 @@ module.exports = {
           'vue-style-loader',
           'css-loader'
         ],
-      },      {
+      }, {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
@@ -66,7 +66,7 @@ module.exports = {
       {
         test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
         loader: 'file-loader'
-    }
+      }
     ]
   },
   resolve: {
@@ -76,35 +76,39 @@ module.exports = {
     extensions: ['*', '.js', '.vue', '.json']
   },
   devServer: {
-    contentBase:'./dist',
+    contentBase: './dist',
     historyApiFallback: true,
+    host: "localhost:8080",
+    proxy: {
+      target: 'http://192.168.46.177:8080'
+    },
     // noInfo: true,
     // hot: true,
-    inline:true
+    inline: true
   },
   performance: {
     hints: false
   },
   devtool: '#eval-source-map',
-  plugins:[
+  plugins: [
     new webpack.ProvidePlugin({
 
       jQuery: 'jquery',
 
       $: 'jquery'
 
-  }),
+    }),
     new HtmlWebpackPlugin({
-            filename:'index.html',
-            template: __dirname + "/src/index.html",//new 一个这个插件的实例，并传入相关的参数,
+      filename: 'index.html',
+      template: __dirname + "/src/index.html",//new 一个这个插件的实例，并传入相关的参数,
     }),
     // new webpack.optimize.CommonsChunkPlugin({
     //   name: 'common',
     //   minChunks: Infinity,
     // }),
     new webpack.optimize.CommonsChunkPlugin({
-      name : 'libs',
-      minChunks: function(module) {
+      name: 'libs',
+      minChunks: function (module) {
         return (
           module.resource &&
           /\.js$/.test(module.resource) &&
@@ -114,20 +118,20 @@ module.exports = {
         )
       },
     }),
-    ...Object.keys(chunksPackage).map(packageName=>{
+    ...Object.keys(chunksPackage).map(packageName => {
       // console.log(packageName)
       return new webpack.optimize.CommonsChunkPlugin({
-        name:packageName,
-        chunks:['libs'],
-        minChunks:function(module,count){
+        name: packageName,
+        chunks: ['libs'],
+        minChunks: function (module, count) {
           return module.resource && chunksPackage[packageName].filter(item => new RegExp(item).test(getModuleName(module)))[0] && count >= 1
         }
       })
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name : 'manifest',
+      name: 'manifest',
       // chunks: ['vendor'],
-      minChunks:Infinity
+      minChunks: Infinity
     }),
   ]
 }
