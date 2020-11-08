@@ -89,12 +89,14 @@ export default {
           .then(function (res) {
             if (res.data == "success") {
               that.$message("注册成功");
+              setTimeout(function () {
+                that.$router.push("/login");
+              }, 1500);
+            } else if (res.data == "用户已经存在") {
+              that.$message("用户已经存在");
             } else {
               that.$message("注册失败");
             }
-            setTimeout(function () {
-              that.$router.push("/login");
-            }, 1500);
           })
           .catch(function (error) {
             console.log(error);
