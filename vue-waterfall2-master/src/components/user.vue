@@ -11,7 +11,7 @@
             line-height: 90px;
             margin-left: 25px;
             width: 500px;
-            height:80px
+            height: 80px;
           "
         >
           用户名
@@ -202,23 +202,30 @@
           </ul>
         </div>
       </div>
-      <button class="btn btn-warning userchange">用户修改</button>
+      <button class="btn btn-warning userchange" @click="change()">
+        用户修改
+      </button>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-   data() {
+  data() {
     return {
       followed: false,
-      textarea:''
+      textarea: "",
     };
   },
   methods: {
-    fabu(){
-        this.$router.push({ name: "Upcontent", params: {} });
-    }
+    fabu() {
+      this.$router.push({ name: "Upcontent", params: {} });
+    },
+    //注册
+    change() {
+      // this.$router.push("/lod");
+      this.$router.push({ name: "Userchange", params: {} });
+    },
   },
 };
 </script>

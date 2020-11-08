@@ -228,7 +228,7 @@
 export default {
   data() {
     return {
-      followed: false,
+      followed: true,
       textarea:''
     };
   },

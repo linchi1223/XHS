@@ -9,6 +9,7 @@ import User from '@/components/user'
 import Comment from '@/components/comment'
 import Register from '@/components/register'
 import Upcontent from '@/components/upcontent'
+import Userchange from '@/components/userchange'
 
 Vue.use(Router)
 
@@ -48,6 +49,11 @@ const router = new Router({
             component: Comment
         },
         {
+            path: '/userchange',
+            name: 'Userchange',
+            component: Userchange
+        },
+        {
             path: '/HelloWorld',
             name: 'HelloWorld',
             component: HelloWorld
@@ -60,13 +66,13 @@ const router = new Router({
     ]
 })
 
-// 挂载路由导航守卫
-router.beforeEach((to, from, next) => {
-    if (to.path === '/login') return next()
-    if (to.path === '/index') return next()
-    if (to.path === '/register') return next()
-    const tokenStr = window.sessionStorage.getItem('token')
-    if (!tokenStr) return next('/login')
-    next()
-})
+// // 挂载路由导航守卫
+// router.beforeEach((to, from, next) => {
+//     if (to.path === '/login') return next()
+//     if (to.path === '/index') return next()
+//     if (to.path === '/register') return next()
+//     const tokenStr = window.sessionStorage.getItem('token')
+//     if (!tokenStr) return next('/login')
+//     next()
+// })
 export default router
