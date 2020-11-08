@@ -73,26 +73,33 @@ export default {
         that.$message("请输入密码");
       } else if ($(".phone").val() == "") {
         that.$message("请输入电话号码");
-      }
-      else{
+      } else {
+        that = this;
         const a = axios
-        .get("/api/system/commen_control/register/verify", {
-          // 还可以直接把参数拼接在url后边
-          params: {
-            username: this.registerForm.username,
-            password: this.registerForm.userpd,
-            phone: this.registerForm.mobilephone,
-          },
-        })
-        .then(function (res) {
-          console.log(res);
-          
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+          .get("/api/system/commen_control/register/verify", {
+            // 还可以直接把参数拼接在url后边
+            params: {
+              username: this.registerForm.username,
+              password: this.registerForm.userpd,
+              phone: this.registerForm.mobilephone,
+              picture:
+                "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
+            },
+          })
+          .then(function (res) {
+            if (res.data == "success") {
+              that.$message("注册成功");
+            } else {
+              that.$message("注册失败");
+            }
+            setTimeout(function () {
+              that.$router.push("/login");
+            }, 1500);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       }
-      
     },
   },
 };

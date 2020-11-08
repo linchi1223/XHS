@@ -12,51 +12,61 @@ import Upcontent from '@/components/upcontent'
 
 Vue.use(Router)
 
-export default new Router({
-  routes: [
-    {
-      path: '/',
-      redirect: '/index'
-    },
-    {
-      path: '/login',
-      name: 'Login',
-      component: Login
-    },
-    {
-      path: '/index',
-      name: 'Index',
-      component: Index
-    },
-    {
-      path: '/register',
-      name: 'Register',
-      component: Register
-    },
-    {
-      path: '/user',
-      name: 'User',
-      component: User
-    },
-    {
-      path: '/upcontent',
-      name: 'Upcontent',
-      component: Upcontent
-    },
-    {
-      path: '/comment',
-      name: 'Comment',
-      component: Comment
-    },
-    {
-      path: '/HelloWorld',
-      name: 'HelloWorld',
-      component: HelloWorld
-    },
-    {
-      path: '/lazy',
-      name: 'lazy',
-      component: lazy
-    }
-  ]
+const router = new Router({
+    routes: [{
+            path: '/',
+            redirect: '/index'
+        },
+        {
+            path: '/login',
+            name: 'Login',
+            component: Login
+        },
+        {
+            path: '/index',
+            name: 'Index',
+            component: Index
+        },
+        {
+            path: '/register',
+            name: 'Register',
+            component: Register
+        },
+        {
+            path: '/user',
+            name: 'User',
+            component: User
+        },
+        {
+            path: '/upcontent',
+            name: 'Upcontent',
+            component: Upcontent
+        },
+        {
+            path: '/comment',
+            name: 'Comment',
+            component: Comment
+        },
+        {
+            path: '/HelloWorld',
+            name: 'HelloWorld',
+            component: HelloWorld
+        },
+        {
+            path: '/lazy',
+            name: 'lazy',
+            component: lazy
+        }
+    ]
 })
+
+// 挂载路由导航守卫
+router.beforeEach((to, from, next) => {
+    if (to.path === '/login') return next()
+    if (to.path === '/index') return next()
+    if (to.path === '/register') return next()
+    const tokenStr = window.sessionStorage.getItem('token')
+    if (!tokenStr) return next('/login')
+    next()
+})
+export default router

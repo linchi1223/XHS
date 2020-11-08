@@ -8,7 +8,9 @@ Vue.config.productionTip = false
 import waterfall from 'vue-waterfall2'
 // import waterfall from '../lib'
 import { Message } from "element-ui";
+import element from "element-ui"
 // Vue.use(Message);
+Vue.use(element)
 Vue.prototype.$message = Message;
 Vue.use(waterfall)
     /* eslint-disable no-new */

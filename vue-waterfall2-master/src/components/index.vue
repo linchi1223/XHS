@@ -148,8 +148,9 @@
   z-index: 1200;
   clear: both;
   height: 80px;
-  position: fixed;
-  width: 100%;
+  position: relative;
+
+  float: right;
   cursor: pointer;
 }
 .headerbg {
@@ -186,12 +187,12 @@
   margin-right: 15px;
 }
 .userimg {
-  background-color: salmon;
+  // background-color: salmon;
   text-align: center;
   line-height: 80px;
   width: 60px;
   height: 60px;
-  margin-top: 10px;
+  margin-top: 15px;
   border-radius: 50%;
   margin-right: 15px;
 }
@@ -220,11 +221,10 @@
 
       <div class="info" v-if="is_login" @click="user()">
         <div class="username Fright">
-          {{ username }}测试名字山东分局啊收快递放假啊熵
+          {{ username }}
         </div>
         <div class="userimg Fright">
-       
-          <!-- <el-avatar> User </el-avatar> -->
+          <el-avatar shape="square" :size="50" :src="squareUrl"></el-avatar>
         </div>
       </div>
       <div class="headerbg">
@@ -289,8 +289,8 @@ export default {
     return {
       data: [],
       col: 5,
-      // is_login: false,
-       is_login: true,
+      squareUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
+      is_login: false,
       username: "",
       loading: false,
       gitHubData: {},
@@ -358,10 +358,17 @@ export default {
     var self = this;
     this.data = this.originData;
     this.getGitHub();
-    // this.data = []
-    // if(){
 
-    // }
+
+
+    
+    var tokenname = window.sessionStorage.getItem("username");
+    if (tokenname == null) {
+      this.is_login = false;
+    } else {
+      this.is_login = true;
+      this.username = tokenname;
+    }
   },
 };
 </script>

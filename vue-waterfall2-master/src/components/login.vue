@@ -5,7 +5,7 @@
     </div>
 
     <div class="from">
-      <div class="form-group" :model="loginForm" >
+      <div class="form-group" :model="loginForm">
         <label for="exampleInputPhone1" prop="username">Phone Number</label>
         <input
           type="phone"
@@ -52,7 +52,6 @@ export default {
   },
   methods: {
     login() {
-      console.log(this.loginForm.username,this.loginForm.userpd)
       let th = this;
       if ($(".phoneN").val() == "" && $(".passW").val() == "") {
         th.$message("请输入用户名和密码");
@@ -60,31 +59,31 @@ export default {
         th.$message("请输入用户名");
       } else if ($(".passW").val() == "") {
         th.$message("请输入密码");
-      }else if ($(".phoneN").val() != "" && $(".passW").val() != "") {
-          var that = this;
-          const a = axios
-            .get("/api/system/commen_control/login/verify", {
-              // 还可以直接把参数拼接在url后边
-              params: {
-                phone: this.loginForm.username,
-                password: this.loginForm.userpd,
-              },
-            })
-            .then(function (res) {
-              console.log(res);
-              if (res.data == "error") return  th.$message("用户名或密码错误");
-              if (res.status == "success") {
-                th.$message("登入成功");
-                setTimeout(function(){
-          
-                  that.$router.push("/index");
-                },1500)
-                
-              }
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
+      } else if ($(".phoneN").val() != "" && $(".passW").val() != "") {
+        var that = this;
+        const a = axios
+          .get("/api/system/commen_control/login/verify", {
+            // 还可以直接把参数拼接在url后边
+            params: {
+              phone: this.loginForm.username,
+              password: this.loginForm.userpd,
+            },
+          })
+          .then(function (res) {
+            console.log(res);
+            if (res.data == "error") return th.$message("用户名或密码错误");
+            if (res.data == "success") {
+              that.$message("登入成功");
+              window.sessionStorage.setItem("username", that.loginForm.username);
+              window.sessionStorage.setItem("token", that.loginForm.username);
+              setTimeout(function () {
+                that.$router.push("/index");
+              }, 1500);
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       }
     },
 
