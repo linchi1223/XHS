@@ -20,6 +20,14 @@ public interface ICommentTableService
     public CommentTable selectCommentTableById(Long commentid);
 
     /**
+     * 查询用户评论管理
+     *
+     * @param textid 文章ID
+     * @return 用户评论列表
+     */
+    public List<CommentTable> selectCommentTableByTextId(Long textid);
+
+    /**
      * 查询用户评论管理列表
      * 
      * @param commentTable 用户评论管理

@@ -84,12 +84,12 @@ public class UserTable extends BaseEntity
     {
         return picture;
     }
-    public void setPhone(Long phone) 
+    public void setPhone(Long phone)
     {
         this.phone = phone;
     }
 
-    public Long getPhone() 
+    public Long getPhone()
     {
         return phone;
     }

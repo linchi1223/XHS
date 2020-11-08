@@ -2,6 +2,10 @@ package com.ruoyi.framework.shiro.realm;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import com.ruoyi.framework.web.domain.server.Sys;
+import com.ruoyi.system.domain.UserTable;
+import com.ruoyi.system.service.IUserTableService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -48,6 +52,8 @@ public class UserRealm extends AuthorizingRealm
 
     @Autowired
     private SysLoginService loginService;
+    @Autowired
+    private IUserTableService userTableService;
 
     /**
      * 授权

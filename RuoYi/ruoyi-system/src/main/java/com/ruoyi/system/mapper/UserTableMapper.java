@@ -63,8 +63,8 @@ public interface UserTableMapper
      *
      * 根据用户名称获取用户
      *
-     * @param username 需要查询的用户名称
+     * @param phone 需要查询的用户名称
      * @return 结果
      */
-    public UserTable selectUserTableByUserName(String username);
+    public UserTable selectUserTableByUserPhone(String phone);
 }
