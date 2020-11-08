@@ -3,12 +3,13 @@
     <div class="bg">
       <!-- <img src="../assets/bg.png" alt=""> -->
     </div>
+
     <div class="from">
-      <div class="form-group" :model="loginForm" :rules="loginFormRules">
+      <div class="form-group" :model="loginForm" >
         <label for="exampleInputPhone1" prop="username">Phone Number</label>
         <input
           type="phone"
-          class="form-control"
+          class="form-control phoneN"
           id="exampleInputphone1"
           aria-describedby="phoneHelp"
           v-model="loginForm.username"
@@ -21,13 +22,17 @@
         <label for="exampleInputPassword1">Password</label>
         <input
           type="password"
-          class="form-control"
+          class="form-control passW"
           id="exampleInputPassword1"
           v-model="loginForm.userpd"
         />
       </div>
-      <button class="btn btn-outline-info login" @click="login">登入</button>
-      <button class="btn btn-outline-secondary" @click="register">注册</button>
+      <button class="btn btn-outline-info login" :plain="true" @click="login">
+        登入
+      </button>
+      <button class="btn btn-outline-secondary" :plain="true" @click="register">
+        注册
+      </button>
     </div>
   </div>
 </template>
@@ -38,42 +43,52 @@ export default {
     return {
       loginForm: [
         {
-          username: "123",
-          userpd: "123",
-        },
-      ],
-      loginFormRules: [
-        {
-          required: true,
-          message: "用户名",
-          trigger: "blur",
-        },
-        {
-          min: 3,
-          max: 5,
-          message: "3-5字符",
-          trigger: "blur",
+          username: "",
+          userpd: "",
+          login_api: "/api/system/commen_control/login/verify",
         },
       ],
     };
   },
   methods: {
     login() {
-      // 测试部分
-      // console.log(1);
-      // var status = 200;
-      // var toten ="123"
-      // window.sessionStorage.setItem("token", toten);
-      // 真实数据
-      const {data:res} =this.$http.post('login',this.loginForm)
-      console.log(res)
-      // if(res.meta.status !== 200)return console.log('登入失败')
-      // if (status !== 200) return console.log("登入失败");
-      // console.log("login");
-      // window.sessionStorage.setItem("token", res.data.toten);
-      // this.$router.push("/index");
+      console.log(this.loginForm.username,this.loginForm.userpd)
+      let th = this;
+      if ($(".phoneN").val() == "" && $(".passW").val() == "") {
+        th.$message("请输入用户名和密码");
+      } else if ($(".phoneN").val() == "") {
+        th.$message("请输入用户名");
+      } else if ($(".passW").val() == "") {
+        th.$message("请输入密码");
+      }else if ($(".phoneN").val() != "" && $(".passW").val() != "") {
+          var that = this;
+          const a = axios
+            .get("/api/system/commen_control/login/verify", {
+              // 还可以直接把参数拼接在url后边
+              params: {
+                phone: this.loginForm.username,
+                password: this.loginForm.userpd,
+              },
+            })
+            .then(function (res) {
+              console.log(res);
+              if (res.data == "error") return  th.$message("用户名或密码错误");
+              if (res.status == "success") {
+                th.$message("登入成功");
+                setTimeout(function(){
+          
+                  that.$router.push("/index");
+                },1500)
+                
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+      }
     },
-     //注册
+
+    //注册
     register() {
       // this.$router.push("/lod");
       this.$router.push({ name: "Register", params: {} });
@@ -113,7 +128,6 @@ input {
 .btn {
   width: 100%;
   margin: 10px 0;
-
 }
 .login {
   background-color: tomato;

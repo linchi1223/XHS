@@ -289,8 +289,8 @@ export default {
     return {
       data: [],
       col: 5,
-      is_login: false,
-      //  is_login: true,
+      // is_login: false,
+       is_login: true,
       username: "",
       loading: false,
       gitHubData: {},
@@ -359,6 +359,9 @@ export default {
     this.data = this.originData;
     this.getGitHub();
     // this.data = []
+    // if(){
+
+    // }
   },
 };
 </script>

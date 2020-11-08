@@ -8,7 +8,7 @@
         <label for="username" prop="username">username</label>
         <input
           type="username"
-          class="form-control"
+          class="form-control username"
           id="username"
           aria-describedby="phoneHelp"
           v-model="registerForm.username"
@@ -21,21 +21,21 @@
         <label for="password">Password</label>
         <input
           type="password"
-          class="form-control"
+          class="form-control password"
           id="password"
           v-model="registerForm.userpd"
         />
       </div>
-       <div class="form-group">
+      <div class="form-group">
         <label for="PhoneNumber">Phone Number</label>
         <input
           type="text"
-          class="form-control"
+          class="form-control phone"
           id="PhoneNumber"
           v-model="registerForm.mobilephone"
         />
       </div>
-       <div class="form-group">
+      <!-- <div class="form-group">
         <label for="Email">e-mail</label>
         <input
           type="text"
@@ -43,7 +43,7 @@
           id="Email"
           v-model="registerForm.email"
         />
-      </div>
+      </div> -->
       <!-- <button class="btn btn-outline-info login" @click="login">登入</button> -->
       <button class="btn btn-outline-secondary" @click="register">注册</button>
     </div>
@@ -58,8 +58,7 @@ export default {
         {
           username: "",
           userpd: "",
-          email:"",
-          mobilephone:"",
+          mobilephone: "",
         },
       ],
     };
@@ -67,7 +66,32 @@ export default {
   methods: {
     //注册
     register() {
-      console.log(this.registerForm);
+      var that = this;
+      if ($(".username").val() == "") {
+        that.$message("请输入用户名");
+      } else if ($(".password").val() == "") {
+        that.$message("请输入密码");
+      } else if ($(".phone").val() == "") {
+        that.$message("请输入电话号码");
+      }
+      else{
+        const a = axios
+        .get("/api/system/commen_control/register/verify", {
+          // 还可以直接把参数拼接在url后边
+          params: {
+            username: this.registerForm.username,
+            password: this.registerForm.userpd,
+            phone: this.registerForm.mobilephone,
+          },
+        })
+        .then(function (res) {
+          console.log(res);
+          
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
       
     },
   },

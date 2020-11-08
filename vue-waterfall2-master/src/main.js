@@ -7,12 +7,14 @@ import router from './router'
 Vue.config.productionTip = false
 import waterfall from 'vue-waterfall2'
 // import waterfall from '../lib'
-
+import { Message } from "element-ui";
+// Vue.use(Message);
+Vue.prototype.$message = Message;
 Vue.use(waterfall)
-/* eslint-disable no-new */
+    /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  components: { App },
-  template: '<App/>'
+    el: '#app',
+    router,
+    components: { App },
+    template: '<App/>'
 })
