@@ -133,15 +133,15 @@ public class UserTableController extends BaseController
      *
     *登录验证
     * */
-    @GetMapping("/login/verify")
+    @GetMapping("/login/vailtify")
     @ResponseBody
     public String Login(String username,String password){
         JSONObject json = new JSONObject();
         UserTable quereUser = userTableService.selectUserTableByUserName(username);
-        if (quereUser != null) {
-            return "success";
+        if (quereUser != null&&quereUser.getPassword().equals(password)) {
+            return "200";
         }
-        else return "null";
+        else return "404";
     }
     @GetMapping("/register")
     @ResponseBody
