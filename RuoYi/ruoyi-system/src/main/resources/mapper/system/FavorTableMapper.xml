@@ -26,6 +26,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectFavorTableVo"/>
         where favorid = #{favorid}
     </select>
+
+    <select id="selectFavorTableByTextId" parameterType="Long" resultMap="FavorTableResult">
+        <include refid="selectFavorTableVo"/>
+        where textid = #{textid}
+    </select>
         
     <insert id="insertFavorTable" parameterType="FavorTable" useGeneratedKeys="true" keyProperty="favorid">
         insert into favor_table

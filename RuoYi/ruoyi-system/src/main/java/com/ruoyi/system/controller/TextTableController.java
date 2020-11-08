@@ -2,12 +2,8 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 
-import com.ruoyi.system.domain.ClassifyTable;
-import com.ruoyi.system.domain.CommentTable;
-import com.ruoyi.system.domain.UserTable;
-import com.ruoyi.system.service.IClassifyTableService;
-import com.ruoyi.system.service.IFavorTableService;
-import com.ruoyi.system.service.IUserTableService;
+import com.ruoyi.system.domain.*;
+import com.ruoyi.system.service.*;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.domain.TextTable;
-import com.ruoyi.system.service.ITextTableService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
@@ -48,6 +42,8 @@ public class TextTableController extends BaseController
     private IClassifyTableService classifyTableService;
     @Autowired
     private IFavorTableService favorTableService;
+    @Autowired
+    private ICommentTableService commentTableService;
 
     @RequiresPermissions("system:text_control:view")
     @GetMapping()
@@ -152,6 +148,9 @@ public class TextTableController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
+        List<CommentTable> commentTables = commentTableService.selectCommentTableByTextId(Long.parseLong(ids));
+        for(int i = 0;i<commentTables.size();++i)
+            commentTableService.deleteCommentTableById(commentTables.get(i).getCommentid());
         return toAjax(textTableService.deleteTextTableByIds(ids));
     }
 }

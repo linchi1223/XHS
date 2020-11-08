@@ -33,6 +33,16 @@ public class FavorTableServiceImpl implements IFavorTableService
     }
 
     /**
+     * 查询文章点赞数
+     *
+     * @param textid 用户点赞管理ID
+     * @return 用户点赞管理
+     */
+    public List<FavorTable> selectFavorTableByTextId(Long textid){
+        return favorTableMapper.selectFavorTableByTextId(textid);
+    }
+
+    /**
      * 查询用户点赞管理列表
      * 
      * @param favorTable 用户点赞管理

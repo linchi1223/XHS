@@ -4,15 +4,15 @@ import java.util.List;
 
 import com.ruoyi.common.json.JSON;
 import com.ruoyi.common.json.JSONObject;
+import com.ruoyi.system.service.ITextTableService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.system.domain.UserTable;
@@ -38,6 +38,8 @@ public class UserTableController extends BaseController
 
     @Autowired
     private IUserTableService userTableService;
+    @Autowired
+    private ITextTableService textTableService;
 
     @RequiresPermissions("system:commen_control:view")
     @GetMapping()
@@ -126,6 +128,9 @@ public class UserTableController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
+        //删除用户的文章
+//        textTableService.selectTextTableList()
+//        textTableService.deleteTextTableById();
         return toAjax(userTableService.deleteUserTableByIds(ids));
     }
 
@@ -133,19 +138,26 @@ public class UserTableController extends BaseController
      *
     *登录验证
     * */
-    @GetMapping("/login/vailtify")
+    @CrossOrigin
+    @GetMapping("/login/verify")
     @ResponseBody
-    public String Login(String username,String password){
-        JSONObject json = new JSONObject();
-        UserTable quereUser = userTableService.selectUserTableByUserName(username);
+    public String Login(String phone,String password){
+        System.out.println(phone+" "+password);
+        UserTable quereUser = userTableService.selectUserTableByUserPhone(phone);
         if (quereUser != null&&quereUser.getPassword().equals(password)) {
-            return "200";
+            System.out.println(quereUser.toString());
+            return "success";
         }
-        else return "404";
+        else return "error";
     }
-    @GetMapping("/register")
+
+    @GetMapping("/register/verify")
     @ResponseBody
     public String Register(UserTable userTable){
+        System.out.println(userTable.toString());
+        UserTable userTable1 = userTableService.selectUserTableByUserPhone(userTable.getPhone().toString());
+        if(userTable1!=null)
+            return "用户已经存在";
         int flag = userTableService.insertUserTable(userTable);
         if (flag == 1) {
             return "success";
