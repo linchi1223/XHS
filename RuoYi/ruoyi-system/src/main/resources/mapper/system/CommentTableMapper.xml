@@ -30,6 +30,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectCommentTableVo"/>
         where commentid = #{commentid}
     </select>
+
+    <select id="selectCommentTableByTextId" parameterType="Long" resultMap="CommentTableResult">
+        <include refid="selectCommentTableVo"/>
+        where textid = #{textid}
+    </select>
+
+    <select id="selectCommentTableByUserId" parameterType="Long" resultMap="CommentTableResult">
+        <include refid="selectCommentTableVo"/>
+        where userid = #{userid}
+    </select>
         
     <insert id="insertCommentTable" parameterType="CommentTable" useGeneratedKeys="true" keyProperty="commentid">
         insert into comment_table

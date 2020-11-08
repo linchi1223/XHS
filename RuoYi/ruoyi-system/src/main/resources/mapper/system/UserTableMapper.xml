@@ -32,9 +32,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where userid = #{userid}
     </select>
 
-    <select id="selectUserTableByUserName" parameterType="String" resultMap="UserTableResult">
+    <select id="selectUserTableByUserPhone" parameterType="String" resultMap="UserTableResult">
         <include refid="selectUserTableVo"/>
-        where username = #{username}
+        where phone = #{phone}
     </select>
         
     <insert id="insertUserTable" parameterType="UserTable" useGeneratedKeys="true" keyProperty="userid">
