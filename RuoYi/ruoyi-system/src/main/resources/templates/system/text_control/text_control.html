@@ -16,7 +16,10 @@
                             </li>
                             <li>
                                 <label>分类号：</label>
-                                <input type="text" name="cname"/>
+<!--                                <input type="text" name="cname"/>-->
+                                <select type = "text" name="cname" class="form-control" required>
+                                    <option th:each="classify:${classify_list}" th:text="${classify.cname}" th:value="${classify.csid}"></option>
+                                </select>
                             </li>
                             <li class="select-time">
                                 <label>上传时间：</label>
@@ -118,12 +121,12 @@
                 },
                 {
                     field: 'userid',
-                    title: '用户名',
+                    title: '用户名(用户id)',
                     formatter:function(value, row, index) {
                         console.log(value)
                         for (var i = 0;i<user_list.length;++i)
                             if(value == user_list[i].userid)
-                                return user_list[i].username;
+                                return user_list[i].username+"(id="+value+")";
                         return value;
                     }
                 },

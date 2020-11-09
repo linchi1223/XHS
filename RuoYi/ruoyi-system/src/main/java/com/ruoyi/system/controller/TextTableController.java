@@ -41,7 +41,7 @@ public class TextTableController extends BaseController
     @Autowired
     private IClassifyTableService classifyTableService;
     @Autowired
-    private IFavorTableService favorTableService;
+    private IUserinfoTableService userinfoTableService;
     @Autowired
     private ICommentTableService commentTableService;
 
@@ -109,6 +109,9 @@ public class TextTableController extends BaseController
     @ResponseBody
     public AjaxResult addSave(TextTable textTable)
     {
+        UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(textTable.getUserid());
+        userinfoTable.setFavor(userinfoTable.getTextCount()+1);
+        userinfoTableService.updateUserinfoTable(userinfoTable);
         return toAjax(textTableService.insertTextTable(textTable));
     }
 

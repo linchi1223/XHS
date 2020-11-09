@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.UserinfoTableMapper">
+    
+    <resultMap type="UserinfoTable" id="UserinfoTableResult">
+        <result property="userid"    column="userid"    />
+        <result property="fans"    column="fans"    />
+        <result property="favor"    column="favor"    />
+        <result property="textCount"    column="text_count"    />
+    </resultMap>
+
+    <sql id="selectUserinfoTableVo">
+        select userid, fans, favor, text_count from userinfo_table
+    </sql>
+
+    <select id="selectUserinfoTableList" parameterType="UserinfoTable" resultMap="UserinfoTableResult">
+        <include refid="selectUserinfoTableVo"/>
+        <where>  
+            <if test="fans != null "> and fans = #{fans}</if>
+            <if test="favor != null "> and favor = #{favor}</if>
+            <if test="textCount != null "> and text_count = #{textCount}</if>
+        </where>
+    </select>
+    
+    <select id="selectUserinfoTableById" parameterType="Long" resultMap="UserinfoTableResult">
+        <include refid="selectUserinfoTableVo"/>
+        where userid = #{userid}
+    </select>
+        
+    <insert id="insertUserinfoTable" parameterType="UserinfoTable">
+        insert into userinfo_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userid != null">userid,</if>
+            <if test="fans != null">fans,</if>
+            <if test="favor != null">favor,</if>
+            <if test="textCount != null">text_count,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userid != null">#{userid},</if>
+            <if test="fans != null">#{fans},</if>
+            <if test="favor != null">#{favor},</if>
+            <if test="textCount != null">#{textCount},</if>
+         </trim>
+    </insert>
+
+    <update id="updateUserinfoTable" parameterType="UserinfoTable">
+        update userinfo_table
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fans != null">fans = #{fans},</if>
+            <if test="favor != null">favor = #{favor},</if>
+            <if test="textCount != null">text_count = #{textCount},</if>
+        </trim>
+        where userid = #{userid}
+    </update>
+
+    <delete id="deleteUserinfoTableById" parameterType="Long">
+        delete from userinfo_table where userid = #{userid}
+    </delete>
+
+    <delete id="deleteUserinfoTableByIds" parameterType="String">
+        delete from userinfo_table where userid in 
+        <foreach item="userid" collection="array" open="(" separator="," close=")">
+            #{userid}
+        </foreach>
+    </delete>
+
+</mapper>

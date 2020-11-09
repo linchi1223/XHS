@@ -4,8 +4,13 @@ import java.util.List;
 
 import com.ruoyi.common.json.JSON;
 import com.ruoyi.common.json.JSONObject;
+import com.ruoyi.system.common.Count;
+import com.ruoyi.system.domain.CommentTable;
 import com.ruoyi.system.domain.TextTable;
+import com.ruoyi.system.domain.UserinfoTable;
+import com.ruoyi.system.service.ICommentTableService;
 import com.ruoyi.system.service.ITextTableService;
+import com.ruoyi.system.service.IUserinfoTableService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -41,6 +46,10 @@ public class UserTableController extends BaseController
     private IUserTableService userTableService;
     @Autowired
     private ITextTableService textTableService;
+    @Autowired
+    private ICommentTableService commentTableService;
+    @Autowired
+    private IUserinfoTableService userinfoTableService;
 
     @RequiresPermissions("system:commen_control:view")
     @GetMapping()
@@ -142,14 +151,24 @@ public class UserTableController extends BaseController
     @CrossOrigin
     @GetMapping("/login/verify")
     @ResponseBody
-    public String Login(String phone,String password){
-        System.out.println(phone+" "+password);
+    public JSONObject Login(String phone,String password){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("data","error");
         UserTable quereUser = userTableService.selectUserTableByUserPhone(phone);
         if (quereUser != null&&quereUser.getPassword().equals(password)) {
-            System.out.println(quereUser.toString());
-            return "success";
+            UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(quereUser.getUserid());
+            if(userinfoTable==null){
+                userinfoTable = new UserinfoTable();
+                userinfoTable.setFans((long)0);
+                userinfoTable.setFavor((long)0);
+                userinfoTable.setUserid(quereUser.getUserid());
+                userinfoTable.setTextCount((long)0);
+                userinfoTableService.insertUserinfoTable(userinfoTable);
+            }
+            jsonObject.set("data","success");
+            jsonObject.put("userid",quereUser.getUserid());
         }
-        else return "error";
+        return jsonObject;
     }
 
     @GetMapping("/register/verify")
@@ -167,14 +186,43 @@ public class UserTableController extends BaseController
     }
     @GetMapping("/login/getTextList")
     @ResponseBody
-    public List<TextTable> text_list(TextTable textTable){
+    public TableDataInfo text_list(TextTable textTable){
         List<TextTable> textTable1 = textTableService.selectTextTableList(textTable);
         for(int i = 0;i<textTable1.size();++i){
             UserTable userTable = userTableService.selectUserTableById(textTable1.get(i).getUserid());
             textTable1.get(i).user_name = userTable.getUsername();
             textTable1.get(i).user_picture = userTable.getPicture();
         }
-        return textTable1;
+        startPage();
+//        return textTable1;
+        return getDataTable(textTable1);
+    }
+
+    @GetMapping("/login/getUserInfo")
+    @ResponseBody
+    public JSONObject User_Info(Long userid){
+        UserTable userTable1 = userTableService.selectUserTableById(userid);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("picture",userTable1.getPicture());
+        jsonObject.put("username",userTable1.getUsername());
+        return jsonObject;
+    }
+
+    @GetMapping("/login/getTextInfo")
+    @ResponseBody
+    public JSONObject Text_Info(Long textid){
+        System.out.println(textid);
+        TextTable textTable = textTableService.selectTextTableById(textid);
+        UserTable userTable = userTableService.selectUserTableById(textTable.getUserid());
+        List<CommentTable> commentTables = commentTableService.selectCommentTableByTextId(textid);
+        UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(textTable.getUserid());
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("username",userTable.getUsername());
+        jsonObject.put("picture",userTable.getPicture());
+        jsonObject.put("textinfo",textTable);
+        jsonObject.put("comment_list",commentTables);
+        jsonObject.put("user_info",userinfoTable);
+        return jsonObject;
     }
 }
 
