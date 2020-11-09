@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ruoyi.common.json.JSON;
 import com.ruoyi.common.json.JSONObject;
+import com.ruoyi.system.domain.TextTable;
 import com.ruoyi.system.service.ITextTableService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -164,4 +165,16 @@ public class UserTableController extends BaseController
         }
         else return "error";
     }
+    @GetMapping("/login/getTextList")
+    @ResponseBody
+    public List<TextTable> text_list(TextTable textTable){
+        List<TextTable> textTable1 = textTableService.selectTextTableList(textTable);
+        for(int i = 0;i<textTable1.size();++i){
+            UserTable userTable = userTableService.selectUserTableById(textTable1.get(i).getUserid());
+            textTable1.get(i).user_name = userTable.getUsername();
+            textTable1.get(i).user_picture = userTable.getPicture();
+        }
+        return textTable1;
+    }
 }
+
