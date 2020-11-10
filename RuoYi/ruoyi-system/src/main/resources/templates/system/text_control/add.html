@@ -71,6 +71,7 @@
     <th:block th:include="include :: bootstrap-fileinput-js"/>
     <th:block th:include="include :: summernote-js" />
     <script th:inline="javascript">
+        var url = []
         var prefix = ctx + "system/text_control"
         $("#form-text_control-add").validate({
             focusCleanup: true
@@ -90,13 +91,19 @@
 
         $(".file-upload").fileinput({
             uploadUrl: '/common/upload',
-            maxFileCount: 1,
-            autoReplace: true
+            allowedFileExtensions: ["jpg", "png", "jpeg", "bmp"], //接收的文件后缀
+            showUpload: false,   // false不显示上传按钮，选择后直接上传
+            maxFileCount: 3,
+            autoReplace: true,
         }).on('fileuploaded', function (event, data, previewId, index) {
-            $("input[name='" + event.currentTarget.id + "']").val(data.response.url)
+            url.push(data.response.url)
+            $("input[name='" + event.currentTarget.id + "']").val(url)
         }).on('fileremoved', function (event, id, index) {
+            console.log(id,index)
             $("input[name='" + event.currentTarget.id + "']").val('')
-        })
+        }).on("filebatchselected", function(e, files) {
+                $(this).fileinput("upload");
+            })
 
         $(function() {
             $('.summernote').summernote({

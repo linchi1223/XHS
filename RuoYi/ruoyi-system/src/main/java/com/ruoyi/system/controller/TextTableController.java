@@ -109,8 +109,9 @@ public class TextTableController extends BaseController
     @ResponseBody
     public AjaxResult addSave(TextTable textTable)
     {
+
         UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(textTable.getUserid());
-        userinfoTable.setFavor(userinfoTable.getTextCount()+1);
+        userinfoTable.setTextCount(userinfoTable.getTextCount()+1);
         userinfoTableService.updateUserinfoTable(userinfoTable);
         return toAjax(textTableService.insertTextTable(textTable));
     }
@@ -151,7 +152,12 @@ public class TextTableController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
+        TextTable textTable = textTableService.selectTextTableById(Long.parseLong(ids));
+        UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(textTable.getUserid());
+        userinfoTable.setTextCount(userinfoTable.getTextCount()-1);
+        userinfoTableService.updateUserinfoTable(userinfoTable);
         List<CommentTable> commentTables = commentTableService.selectCommentTableByTextId(Long.parseLong(ids));
+        //删除对应文章的评论
         for(int i = 0;i<commentTables.size();++i)
             commentTableService.deleteCommentTableById(commentTables.get(i).getCommentid());
         return toAjax(textTableService.deleteTextTableByIds(ids));

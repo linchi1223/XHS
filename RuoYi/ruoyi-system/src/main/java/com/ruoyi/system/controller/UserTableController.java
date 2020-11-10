@@ -103,7 +103,18 @@ public class UserTableController extends BaseController
     @ResponseBody
     public AjaxResult addSave(UserTable userTable)
     {
-        return toAjax(userTableService.insertUserTable(userTable));
+        int  a = userTableService.insertUserTable(userTable);
+        Long userid = userTableService.selectUserTableByUserPhone(userTable.getPhone().toString()).getUserid();
+        UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(userid);
+        if(userinfoTable==null){
+            userinfoTable = new UserinfoTable();
+            userinfoTable.setFans((long)0);
+            userinfoTable.setFavor((long)0);
+            userinfoTable.setUserid(userid);
+            userinfoTable.setTextCount((long)0);
+            userinfoTableService.insertUserinfoTable(userinfoTable);
+        }
+        return toAjax(a);
     }
 
     /**
@@ -136,11 +147,15 @@ public class UserTableController extends BaseController
     @Log(title = "普通用户管理", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
-    public AjaxResult remove(String ids)
+    public AjaxResult remove(String ids,TextTable textTable)
     {
-        //删除用户的文章
-//        textTableService.selectTextTableList()
-//        textTableService.deleteTextTableById();
+       // 删除用户的文章
+        List<TextTable> textTable1 = textTableService.selectTextTableList(textTable);
+        for(int i = 0;i<textTable1.size();++i)
+            if(textTable1.get(i).getUserid()==Long.parseLong(ids))
+                textTableService.deleteTextTableById(textTable1.get(i).getTextid());
+            //删除用户的点赞数，关注，文章信息
+        userinfoTableService.deleteUserinfoTableById(Long.parseLong(ids));
         return toAjax(userTableService.deleteUserTableByIds(ids));
     }
 
@@ -156,15 +171,6 @@ public class UserTableController extends BaseController
         jsonObject.put("data","error");
         UserTable quereUser = userTableService.selectUserTableByUserPhone(phone);
         if (quereUser != null&&quereUser.getPassword().equals(password)) {
-            UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(quereUser.getUserid());
-            if(userinfoTable==null){
-                userinfoTable = new UserinfoTable();
-                userinfoTable.setFans((long)0);
-                userinfoTable.setFavor((long)0);
-                userinfoTable.setUserid(quereUser.getUserid());
-                userinfoTable.setTextCount((long)0);
-                userinfoTableService.insertUserinfoTable(userinfoTable);
-            }
             jsonObject.set("data","success");
             jsonObject.put("userid",quereUser.getUserid());
         }
@@ -187,13 +193,14 @@ public class UserTableController extends BaseController
     @GetMapping("/login/getTextList")
     @ResponseBody
     public TableDataInfo text_list(TextTable textTable){
+
+        startPage();
         List<TextTable> textTable1 = textTableService.selectTextTableList(textTable);
         for(int i = 0;i<textTable1.size();++i){
             UserTable userTable = userTableService.selectUserTableById(textTable1.get(i).getUserid());
             textTable1.get(i).user_name = userTable.getUsername();
             textTable1.get(i).user_picture = userTable.getPicture();
         }
-        startPage();
 //        return textTable1;
         return getDataTable(textTable1);
     }
@@ -223,6 +230,14 @@ public class UserTableController extends BaseController
         jsonObject.put("comment_list",commentTables);
         jsonObject.put("user_info",userinfoTable);
         return jsonObject;
+    }
+    @GetMapping("/login/getTextLList")
+    @ResponseBody
+    public TableDataInfo llist(UserTable userTable)
+    {
+        startPage();
+        List<UserTable> list = userTableService.selectUserTableList(userTable);
+        return getDataTable(list);
     }
 }
 
