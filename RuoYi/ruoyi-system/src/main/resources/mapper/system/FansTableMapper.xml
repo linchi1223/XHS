@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FansTableMapper">
+    
+    <resultMap type="FansTable" id="FansTableResult">
+        <result property="fansid"    column="fansid"    />
+        <result property="userid1"    column="userid1"    />
+        <result property="userid2"    column="userid2"    />
+    </resultMap>
+
+    <sql id="selectFansTableVo">
+        select fansid, userid1, userid2 from fans_table
+    </sql>
+
+    <select id="selectFansTableList" parameterType="FansTable" resultMap="FansTableResult">
+        <include refid="selectFansTableVo"/>
+        <where>  
+            <if test="userid1 != null "> and userid1 = #{userid1}</if>
+            <if test="userid2 != null "> and userid2 = #{userid2}</if>
+        </where>
+    </select>
+    
+    <select id="selectFansTableById" parameterType="Long" resultMap="FansTableResult">
+        <include refid="selectFansTableVo"/>
+        where fansid = #{fansid}
+    </select>
+        
+    <insert id="insertFansTable" parameterType="FansTable" useGeneratedKeys="true" keyProperty="fansid">
+        insert into fans_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userid1 != null">userid1,</if>
+            <if test="userid2 != null">userid2,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userid1 != null">#{userid1},</if>
+            <if test="userid2 != null">#{userid2},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFansTable" parameterType="FansTable">
+        update fans_table
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userid1 != null">userid1 = #{userid1},</if>
+            <if test="userid2 != null">userid2 = #{userid2},</if>
+        </trim>
+        where fansid = #{fansid}
+    </update>
+
+    <delete id="deleteFansTableById" parameterType="Long">
+        delete from fans_table where fansid = #{fansid}
+    </delete>
+
+    <delete id="deleteFansTableByIds" parameterType="String">
+        delete from fans_table where fansid in 
+        <foreach item="fansid" collection="array" open="(" separator="," close=")">
+            #{fansid}
+        </foreach>
+    </delete>
+
+</mapper>

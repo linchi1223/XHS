@@ -8,9 +8,7 @@ import com.ruoyi.system.common.Count;
 import com.ruoyi.system.domain.CommentTable;
 import com.ruoyi.system.domain.TextTable;
 import com.ruoyi.system.domain.UserinfoTable;
-import com.ruoyi.system.service.ICommentTableService;
-import com.ruoyi.system.service.ITextTableService;
-import com.ruoyi.system.service.IUserinfoTableService;
+import com.ruoyi.system.service.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.system.domain.UserTable;
-import com.ruoyi.system.service.IUserTableService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
@@ -50,7 +47,8 @@ public class UserTableController extends BaseController
     private ICommentTableService commentTableService;
     @Autowired
     private IUserinfoTableService userinfoTableService;
-
+    @Autowired
+    private IFansTableService fansTableService;
     @RequiresPermissions("system:commen_control:view")
     @GetMapping()
     public String commen_control()
@@ -224,16 +222,10 @@ public class UserTableController extends BaseController
         List<CommentTable> commentTables = commentTableService.selectCommentTableByTextId(textid);
         UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(textTable.getUserid());
         JSONObject jsonObject = new JSONObject();
-        //返回文章作者的用户名和头像
         jsonObject.put("username",userTable.getUsername());
         jsonObject.put("picture",userTable.getPicture());
-        //返回文章作者用户的关注数，粉丝数，和文章数
-        jsonObject.put("user_info",userinfoTable);
-        //返回文章信息
         jsonObject.put("textinfo",textTable);
-        /*
-        *将文章评论对应用户的头像和用户名添加进去
-        * */
+        jsonObject.put("user_info",userinfoTable);
         for(int i = 0;i<commentTables.size();++i)
         {
             UserTable userTable1 = userTableService.selectUserTableById(commentTables.get(i).getUserid());
@@ -241,6 +233,8 @@ public class UserTableController extends BaseController
             commentTables.get(i).setcUser_p(userTable1.getPicture());
         }
         jsonObject.put("comment_list",commentTables);
+
+//        boolean flag = fansTableService.selectFansTableById();
         return jsonObject;
     }
     @GetMapping("/login/getTextLList")

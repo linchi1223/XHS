@@ -285,6 +285,7 @@ public class ShiroConfig
         // 不需要拦截的访问
         filterChainDefinitionMap.put("/login", "anon,captchaValidate");
         // 设置不拦截的页面
+        filterChainDefinitionMap.put("/common/**", "anon,captchaValidate");
         filterChainDefinitionMap.put("/system/commen_control/login/**", "anon,captchaValidate");
         filterChainDefinitionMap.put("/system/commen_control/register/**", "anon,captchaValidate");
 //        filterChainDefinitionMap.put("/system/collect_control/**","anon");
