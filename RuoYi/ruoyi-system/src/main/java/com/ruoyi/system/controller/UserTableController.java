@@ -224,11 +224,23 @@ public class UserTableController extends BaseController
         List<CommentTable> commentTables = commentTableService.selectCommentTableByTextId(textid);
         UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(textTable.getUserid());
         JSONObject jsonObject = new JSONObject();
+        //返回文章作者的用户名和头像
         jsonObject.put("username",userTable.getUsername());
         jsonObject.put("picture",userTable.getPicture());
-        jsonObject.put("textinfo",textTable);
-        jsonObject.put("comment_list",commentTables);
+        //返回文章作者用户的关注数，粉丝数，和文章数
         jsonObject.put("user_info",userinfoTable);
+        //返回文章信息
+        jsonObject.put("textinfo",textTable);
+        /*
+        *将文章评论对应用户的头像和用户名添加进去
+        * */
+        for(int i = 0;i<commentTables.size();++i)
+        {
+            UserTable userTable1 = userTableService.selectUserTableById(commentTables.get(i).getUserid());
+            commentTables.get(i).setcUser_n(userTable1.getUsername());
+            commentTables.get(i).setcUser_p(userTable1.getPicture());
+        }
+        jsonObject.put("comment_list",commentTables);
         return jsonObject;
     }
     @GetMapping("/login/getTextLList")
