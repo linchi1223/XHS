@@ -2,14 +2,14 @@ package com.ruoyi.web.controller.common;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.framework.web.domain.server.Sys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.ruoyi.common.config.Global;
 import com.ruoyi.common.config.ServerConfig;
@@ -18,6 +18,9 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.FileUtils;
+
+import java.net.Inet4Address;
+import java.net.InetAddress;
 
 /**
  * 通用请求处理
@@ -68,10 +71,13 @@ public class CommonController
     /**
      * 通用上传请求
      */
-    @PostMapping("/common/upload")
+//    @GetMapping("/common/upload")
+    @RequestMapping(value = "/common/upload",method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public AjaxResult uploadFile(MultipartFile file) throws Exception
     {
+        System.out.println("---------------->"+"yes");
+        System.out.println(file.getOriginalFilename());
         try
         {
             // 上传文件路径
@@ -80,8 +86,8 @@ public class CommonController
             String fileName = FileUploadUtils.upload(filePath, file);
             String url = serverConfig.getUrl() + fileName;
             AjaxResult ajax = AjaxResult.success();
-            ajax.put("fileName", fileName);
-            ajax.put("url", url);
+//            ajax.put("fileName", fileName);
+            ajax.put("url",fileName);
             return ajax;
         }
         catch (Exception e)

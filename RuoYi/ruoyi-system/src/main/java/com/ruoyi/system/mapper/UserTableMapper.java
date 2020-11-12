@@ -60,10 +60,8 @@ public interface UserTableMapper
     public int deleteUserTableByIds(String[] userids);
 
     /**
-     *
-     * 根据用户名称获取用户
-     *
-     * @param phone 需要查询的用户名称
+     * 根据用户手机号称获取用户
+     * @param phone 需要查询的用户手机号
      * @return 结果
      */
     public UserTable selectUserTableByUserPhone(String phone);

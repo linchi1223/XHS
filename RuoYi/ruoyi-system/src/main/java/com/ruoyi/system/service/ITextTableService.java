@@ -58,4 +58,11 @@ public interface ITextTableService
      * @return 结果
      */
     public int deleteTextTableById(Long textid);
+    /**
+     * 查询文章管理
+     *
+     * @param userid 文章管理ID
+     * @return 文章管理
+     */
+    public List<TextTable> selectTextTableByUserId(Long userid);
 }

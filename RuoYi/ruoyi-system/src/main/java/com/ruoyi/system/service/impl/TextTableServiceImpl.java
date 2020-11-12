@@ -91,4 +91,13 @@ public class TextTableServiceImpl implements ITextTableService
     {
         return textTableMapper.deleteTextTableById(textid);
     }
+    /**
+     * 查询文章管理
+     *
+     * @param userid 文章管理ID
+     * @return 文章管理
+     */
+    public List<TextTable> selectTextTableByUserId(Long userid){
+        return textTableMapper.selectTextTableByUserId(userid);
+    }
 }

@@ -16,17 +16,16 @@
                             </li>
                             <li>
                                 <label>分类号：</label>
-                                <input type="text" name="cname"/>
+<!--                                <input type="text" name="cname"/>-->
+                                <select type = "text" name="cname" class="form-control" required>
+                                    <option th:each="classify:${classify_list}" th:text="${classify.cname}" th:value="${classify.csid}"></option>
+                                </select>
                             </li>
                             <li class="select-time">
                                 <label>上传时间：</label>
                                 <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginUptime]"/>
                                 <span>-</span>
                                 <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endUptime]"/>
-                            </li>
-                            <li>
-                                <label>点赞数：</label>
-                                <input type="text" name="favor"/>
                             </li>
                             <li>
                                 <label>用户id：</label>
@@ -92,11 +91,13 @@
                 },
                 {
                     field: 'textcontent',
-                    title: '文章内容'
+                    title: '文章内容',
+                    visible: false
                 },
                 {
                     field: 'picture',
-                    title: '图片'
+                    title: '图片',
+                    visible:false
                 },
                 {
                     field: 'csid',
@@ -118,12 +119,11 @@
                 },
                 {
                     field: 'userid',
-                    title: '用户名',
+                    title: '用户名(用户id)',
                     formatter:function(value, row, index) {
-                        console.log(value)
                         for (var i = 0;i<user_list.length;++i)
                             if(value == user_list[i].userid)
-                                return user_list[i].username;
+                                return user_list[i].username+"(id="+value+")";
                         return value;
                     }
                 },

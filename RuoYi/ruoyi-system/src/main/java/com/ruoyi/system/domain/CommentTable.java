@@ -91,4 +91,27 @@ public class CommentTable extends BaseEntity
             .append("time", getTime())
             .toString();
     }
+    /*
+     * 返回前端信息
+     * */
+    //评论用户的头像
+    private String cUser_p;
+    //评论用户的用户名
+    private String cUser_n;
+
+    public String getcUser_p() {
+        return cUser_p;
+    }
+
+    public String getcUser_n() {
+        return cUser_n;
+    }
+
+    public void setcUser_p(String cUser_p) {
+        this.cUser_p = cUser_p;
+    }
+
+    public void setcUser_n(String cUser_n) {
+        this.cUser_n = cUser_n;
+    }
 }
