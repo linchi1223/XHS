@@ -248,7 +248,9 @@ public class UserTableController extends BaseController
         jsonObject.put("userinfo",userTable1);
         return jsonObject;
     }
-
+/*
+* 返回文章的详细信息和评论的列表
+* */
     @GetMapping("/login/getTextInfo")
     @ResponseBody
     public JSONObject Text_Info(Long textid){
@@ -304,9 +306,12 @@ public class UserTableController extends BaseController
     @ResponseBody
     public JSONObject get_User_Text(Long userid){
         UserTable userTable1 = userTableService.selectUserTableById(userid);
+        UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(userid);
         JSONObject jsonObject = new JSONObject();
         List<TextTable>textTables = textTableService.selectTextTableByUserId(userid);
-        jsonObject.put("userinfo",userTable1);
+        jsonObject.put("picture",userTable1.getPicture());
+        jsonObject.put("username",userTable1.getUsername());
+        jsonObject.put("userinfoTable",userinfoTable);
         jsonObject.put("text_list",textTables);
         return jsonObject;
     }

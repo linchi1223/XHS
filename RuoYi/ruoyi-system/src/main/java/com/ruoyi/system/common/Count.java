@@ -31,6 +31,8 @@ public class Count extends BaseController {
     private IUserTableService userTableService;
     @Autowired
     private IFavorTableService favorTableService;
+    @Autowired
+    private ITextTableService textTableService;
     /*
      * 数量更新
      * */
@@ -118,6 +120,17 @@ public class Count extends BaseController {
         JSONObject jsonObject = new JSONObject();
         FavorTable favorTable1 = favorTableService.selectFavorTableByUseridAndTextid(favorTable);
         if(favorTable1==null)
+            jsonObject.put("result","false");
+        else jsonObject.put("result","true");
+        return jsonObject;
+    }
+    @GetMapping("/up_text")
+    @ResponseBody
+    public JSONObject up_text(TextTable textTable){
+        JSONObject jsonObject = new JSONObject();
+        textTable.setUptime(new Date());
+        int flag = textTableService.insertTextTable(textTable);
+        if(flag==0)
             jsonObject.put("result","false");
         else jsonObject.put("result","true");
         return jsonObject;

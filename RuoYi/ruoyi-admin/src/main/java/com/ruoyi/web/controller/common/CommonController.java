@@ -9,9 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.ruoyi.common.config.Global;
 import com.ruoyi.common.config.ServerConfig;
@@ -73,10 +71,13 @@ public class CommonController
     /**
      * 通用上传请求
      */
-    @PostMapping("/common/upload")
+//    @GetMapping("/common/upload")
+    @RequestMapping(value = "/common/upload",method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public AjaxResult uploadFile(MultipartFile file) throws Exception
     {
+        System.out.println("---------------->"+"yes");
+        System.out.println(file.getOriginalFilename());
         try
         {
             // 上传文件路径
