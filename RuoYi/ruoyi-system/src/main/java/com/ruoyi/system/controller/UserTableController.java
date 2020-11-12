@@ -153,9 +153,17 @@ public class UserTableController extends BaseController
             if(textTable1.get(i).getUserid()==Long.parseLong(ids))
                 textTableService.deleteTextTableById(textTable1.get(i).getTextid());
             //删除用户的点赞数，关注，文章信息
+
+        //通过用户id 删除用户的评论
+        List<CommentTable>  commentTables= commentTableService.selectCommentTableByUserId(Long.parseLong(ids));
+
+        for(int i = 0;i<commentTables.size();++i)
+            commentTableService.deleteCommentTableById(commentTables.get(i).getCommentid());
+
         userinfoTableService.deleteUserinfoTableById(Long.parseLong(ids));
         return toAjax(userTableService.deleteUserTableByIds(ids));
     }
+
 
     /**
      *
@@ -174,7 +182,9 @@ public class UserTableController extends BaseController
         }
         return jsonObject;
     }
-
+    /*
+     *  用户注册验证 添加用户信息到关注粉丝表
+     */
     @GetMapping("/register/verify")
     @ResponseBody
     public String Register(UserTable userTable){
@@ -183,11 +193,24 @@ public class UserTableController extends BaseController
         if(userTable1!=null)
             return "用户已经存在";
         int flag = userTableService.insertUserTable(userTable);
+        Long userid = userTableService.selectUserTableByUserPhone(userTable.getPhone().toString()).getUserid();
+        UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(userid);
+        if(userinfoTable==null){
+            userinfoTable = new UserinfoTable();
+            userinfoTable.setFans((long)0);
+            userinfoTable.setFavor((long)0);
+            userinfoTable.setUserid(userid);
+            userinfoTable.setTextCount((long)0);
+            userinfoTableService.insertUserinfoTable(userinfoTable);
+        }
         if (flag == 1) {
             return "success";
         }
         else return "error";
     }
+    /*
+    * 获取文章列表 和用户的基本信息
+    * */
     @GetMapping("/login/getTextList")
     @ResponseBody
     public TableDataInfo text_list(TextTable textTable){
@@ -202,7 +225,9 @@ public class UserTableController extends BaseController
 //        return textTable1;
         return getDataTable(textTable1);
     }
-
+    /*
+    * 获取用户的 基本信息，关注，粉丝信息
+    * */
     @GetMapping("/login/getUserInfo")
     @ResponseBody
     public JSONObject User_Info(Long userid){
@@ -238,6 +263,9 @@ public class UserTableController extends BaseController
 //        boolean flag = fansTableService.selectFansTableById();
         return jsonObject;
     }
+    /*
+    * 分页获取文章列表
+     */
     @GetMapping("/login/getTextLList")
     @ResponseBody
     public TableDataInfo llist(UserTable userTable)
@@ -246,6 +274,9 @@ public class UserTableController extends BaseController
         List<UserTable> list = userTableService.selectUserTableList(userTable);
         return getDataTable(list);
     }
+    /*
+    * 用户修改个人信息
+    * */
     @GetMapping("/login/editUserInfo")
     @ResponseBody
     public JSONObject user_edit(UserTable userTable){
@@ -256,14 +287,26 @@ public class UserTableController extends BaseController
         else jsonObject.put("result","error");
         return jsonObject;
     }
+    /*
+    * 通过用户id用户信息，和文章列表
+    * */
     @GetMapping("/login/getUserText")
     @ResponseBody
     public JSONObject get_User_Text(Long userid){
         UserTable userTable1 = userTableService.selectUserTableById(userid);
         JSONObject jsonObject = new JSONObject();
-//        List<TextTable>textTables = textTableService.selectTextTableById();
+        List<TextTable>textTables = textTableService.selectTextTableByUserId(userid);
         jsonObject.put("userinfo",userTable1);
+        jsonObject.put("text_list",textTables);
         return jsonObject;
+    }
+    /*
+    * 修改用户前  获取用户信息
+    * */
+    @GetMapping("/login/edituser")
+    @ResponseBody
+    public UserTable getUser(Long userid){
+        return userTableService.selectUserTableById(userid);
     }
 }
 

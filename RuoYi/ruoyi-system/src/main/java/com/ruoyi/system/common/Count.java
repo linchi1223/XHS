@@ -89,6 +89,10 @@ public class Count extends BaseController {
         }
         return true;
     }
+    /*
+    * @param commentable
+    * 插入评论接口
+    * */
     @GetMapping("/insert_comment")
     @ResponseBody
     public JSONObject insert_comment(CommentTable commentTable){

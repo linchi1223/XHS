@@ -101,4 +101,14 @@ public class CommentTableServiceImpl implements ICommentTableService
     {
         return commentTableMapper.deleteCommentTableById(commentid);
     }
+
+    /**
+     * 通过用户id获取用户的评论列表
+     *
+     * @param userid 需要查询的用户id
+     * @return 结果
+     */
+    public List<CommentTable> selectCommentTableByUserId(Long userid){
+        return  commentTableMapper.selectCommentTableByUserId(userid);
+    }
 }
