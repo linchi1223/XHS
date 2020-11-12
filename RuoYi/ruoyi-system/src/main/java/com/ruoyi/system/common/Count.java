@@ -96,7 +96,7 @@ public class Count extends BaseController {
         JSONObject jsonObject = new JSONObject();
         commentTable.setTime(new Date());
         int flag = commentTableService.insertCommentTable(commentTable);
-        List<CommentTable> commentTables = commentTableService.selectCommentTableList(commentTable);
+        List<CommentTable> commentTables = commentTableService.selectCommentTableByTextId(commentTable.getTextid());
         for(int i = 0;i<commentTables.size();++i)
         {
             UserTable userTable1 = userTableService.selectUserTableById(commentTables.get(i).getUserid());

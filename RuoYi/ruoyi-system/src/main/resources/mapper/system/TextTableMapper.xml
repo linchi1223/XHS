@@ -36,7 +36,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectTextTableVo"/>
         where textid = #{textid}
     </select>
-        
+
+    <select id="selectTextTableByUserId" parameterType="Long" resultMap="TextTableResult">
+        <include refid="selectTextTableVo"/>
+        where userid = #{userid}
+    </select>
     <insert id="insertTextTable" parameterType="TextTable" useGeneratedKeys="true" keyProperty="textid">
         insert into text_table
         <trim prefix="(" suffix=")" suffixOverrides=",">

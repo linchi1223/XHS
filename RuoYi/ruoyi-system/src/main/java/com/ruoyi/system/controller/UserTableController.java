@@ -210,6 +210,7 @@ public class UserTableController extends BaseController
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("picture",userTable1.getPicture());
         jsonObject.put("username",userTable1.getUsername());
+        jsonObject.put("userinfo",userTable1);
         return jsonObject;
     }
 
@@ -244,6 +245,25 @@ public class UserTableController extends BaseController
         startPage();
         List<UserTable> list = userTableService.selectUserTableList(userTable);
         return getDataTable(list);
+    }
+    @GetMapping("/login/editUserInfo")
+    @ResponseBody
+    public JSONObject user_edit(UserTable userTable){
+        JSONObject jsonObject = new JSONObject();
+        int flag = userTableService.updateUserTable(userTable);
+        if(flag>0)
+            jsonObject.put("result","success");
+        else jsonObject.put("result","error");
+        return jsonObject;
+    }
+    @GetMapping("/login/getUserText")
+    @ResponseBody
+    public JSONObject get_User_Text(Long userid){
+        UserTable userTable1 = userTableService.selectUserTableById(userid);
+        JSONObject jsonObject = new JSONObject();
+//        List<TextTable>textTables = textTableService.selectTextTableById();
+        jsonObject.put("userinfo",userTable1);
+        return jsonObject;
     }
 }
 
