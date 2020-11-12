@@ -58,4 +58,20 @@ public interface IFansTableService
      * @return 结果
      */
     public int deleteFansTableById(Long fansid);
+
+    /**
+     * 查询userid1是否关注userid2
+     *
+     * @param fansTable
+     * @return 结果
+     */
+    public FansTable selectFansTableByUserid1AndUserid2(FansTable fansTable);
+
+    /**
+     * 查询userid的关注列表
+     *
+     * @param userid
+     * @return 结果
+     */
+    public List<FansTable> selectFansTableByUserid(Long userid);
 }

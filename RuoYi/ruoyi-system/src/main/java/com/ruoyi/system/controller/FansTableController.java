@@ -1,6 +1,10 @@
 package com.ruoyi.system.controller;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.UserinfoTable;
+import com.ruoyi.system.service.IUserTableService;
+import com.ruoyi.system.service.IUserinfoTableService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,7 +37,8 @@ public class FansTableController extends BaseController
 
     @Autowired
     private IFansTableService fansTableService;
-
+    @Autowired
+    private IUserinfoTableService userinfoTableService;
     @RequiresPermissions("system:fans_control:view")
     @GetMapping()
     public String fans_control()

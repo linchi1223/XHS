@@ -5,9 +5,7 @@ import java.util.List;
 import com.ruoyi.common.json.JSON;
 import com.ruoyi.common.json.JSONObject;
 import com.ruoyi.system.common.Count;
-import com.ruoyi.system.domain.CommentTable;
-import com.ruoyi.system.domain.TextTable;
-import com.ruoyi.system.domain.UserinfoTable;
+import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -19,7 +17,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.domain.UserTable;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
@@ -47,6 +44,8 @@ public class UserTableController extends BaseController
     private ICommentTableService commentTableService;
     @Autowired
     private IUserinfoTableService userinfoTableService;
+    @Autowired
+    private IFavorTableService favorTableService;
     @Autowired
     private IFansTableService fansTableService;
     @RequiresPermissions("system:commen_control:view")
@@ -147,12 +146,17 @@ public class UserTableController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids,TextTable textTable)
     {
+        //删除用户时不删除点赞数,点赞列表依旧保留
+        //优先删除用户的点赞
+        List<FavorTable> favorTables = favorTableService.selectFavorTableByUserid(Long.parseLong(ids));
+        for(int i = 0;i<favorTables.size();++i)
+            favorTableService.deleteFavorTableById(favorTables.get(i).getFavorid());
+
        // 删除用户的文章
         List<TextTable> textTable1 = textTableService.selectTextTableList(textTable);
         for(int i = 0;i<textTable1.size();++i)
             if(textTable1.get(i).getUserid()==Long.parseLong(ids))
                 textTableService.deleteTextTableById(textTable1.get(i).getTextid());
-            //删除用户的点赞数，关注，文章信息
 
         //通过用户id 删除用户的评论
         List<CommentTable>  commentTables= commentTableService.selectCommentTableByUserId(Long.parseLong(ids));
@@ -160,6 +164,12 @@ public class UserTableController extends BaseController
         for(int i = 0;i<commentTables.size();++i)
             commentTableService.deleteCommentTableById(commentTables.get(i).getCommentid());
 
+        //删除用户时自动取关所有关注的人
+        //通过用户id 删除用户的评论
+        List<FansTable> fansTables = fansTableService.selectFansTableByUserid(Long.parseLong(ids));
+        for(int i = 0;i<fansTables.size();++i)
+            fansTableService.deleteFansTableById(fansTables.get(i).getFansid());
+        //删除用户的粉丝数，关注数，文章数信息
         userinfoTableService.deleteUserinfoTableById(Long.parseLong(ids));
         return toAjax(userTableService.deleteUserTableByIds(ids));
     }

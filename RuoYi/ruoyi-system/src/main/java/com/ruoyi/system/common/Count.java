@@ -1,15 +1,10 @@
 package com.ruoyi.system.common;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.json.JSONObject;
-import com.ruoyi.system.domain.CommentTable;
-import com.ruoyi.system.domain.FansTable;
-import com.ruoyi.system.domain.UserTable;
-import com.ruoyi.system.domain.UserinfoTable;
-import com.ruoyi.system.service.ICommentTableService;
-import com.ruoyi.system.service.IFansTableService;
-import com.ruoyi.system.service.IUserTableService;
-import com.ruoyi.system.service.IUserinfoTableService;
+import com.ruoyi.system.domain.*;
+import com.ruoyi.system.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,14 +29,14 @@ public class Count extends BaseController {
     private ICommentTableService commentTableService;
     @Autowired
     private IUserTableService userTableService;
+    @Autowired
+    private IFavorTableService favorTableService;
     /*
      * 数量更新
      * */
     /*
     * 数量变动
     * */
-    @GetMapping("/updata_info_favor")
-    @ResponseBody
     public Boolean updata_info_favor(Long userid,Boolean flag){
         UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(userid);
         //用户信息返回空
@@ -59,8 +54,8 @@ public class Count extends BaseController {
         UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(userid);
         if(userinfoTable==null)
             return true;
-        if(flag) userinfoTable.setFavor(userinfoTable.getFans()+1);
-        else userinfoTable.setFavor(userinfoTable.getFans()-1);
+        if(flag) userinfoTable.setFans(userinfoTable.getFans()+1);
+        else userinfoTable.setFans(userinfoTable.getFans()-1);
         userinfoTableService.updateUserinfoTable(userinfoTable);
         return true;
     }
@@ -73,20 +68,10 @@ public class Count extends BaseController {
     @ResponseBody
     public Boolean updata_info(FansTable fansTable,boolean flag){
         //flag为true 表示为关注
-        if(flag){
-            //添加关注数据
+        if(flag)
             fansTableService.insertFansTable(fansTable);
-            //关注用户 关注人数加一
-            //被关注用户 粉丝数加一
-            updata_info_favor(fansTable.getUserid1(),flag);
-            updata_info_fans(fansTable.getUserid2(),flag);
-        }
-        else{
-            //关注用户 关注人数减一
-            //被关注用户 粉丝数减一
-            updata_info_favor(fansTable.getUserid1(),flag);
-            updata_info_fans(fansTable.getUserid2(),flag);
-        }
+        else
+            fansTableService.deleteFansTableById(fansTableService.selectFansTableByUserid1AndUserid2(fansTable).getFansid());
         return true;
     }
     /*
@@ -110,5 +95,31 @@ public class Count extends BaseController {
         jsonObject.put("comment_list",commentTables);
         jsonObject.put("flag",flag);
         return  jsonObject;
+    }
+    /*
+    * 查询用户是否关注对应用户
+    * */
+    @GetMapping("/quere_fans")
+    @ResponseBody
+    public JSONObject if_fans(FansTable fansTable){
+        JSONObject jsonObject = new JSONObject();
+        FansTable fansTable1 = fansTableService.selectFansTableByUserid1AndUserid2(fansTable);
+        if(fansTable1==null)
+            jsonObject.put("result","false");
+        else jsonObject.put("result","true");
+        return jsonObject;
+    }
+    /*
+    * 查询用户是否给对应文章点赞
+    * */
+    @GetMapping("/quere_favor")
+    @ResponseBody
+    public JSONObject if_favor(FavorTable favorTable){
+        JSONObject jsonObject = new JSONObject();
+        FavorTable favorTable1 = favorTableService.selectFavorTableByUseridAndTextid(favorTable);
+        if(favorTable1==null)
+            jsonObject.put("result","false");
+        else jsonObject.put("result","true");
+        return jsonObject;
     }
 }
