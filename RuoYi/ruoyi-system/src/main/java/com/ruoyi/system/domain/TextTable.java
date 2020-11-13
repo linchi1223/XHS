@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 
 /**
  * 文章管理对象 text_table
@@ -47,7 +48,19 @@ public class TextTable extends BaseEntity
     @Excel(name = "用户id")
     private Long userid;
 
-    public void setTextid(Long textid) 
+    public String user_name;
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public String getUser_picture() {
+        return user_picture;
+    }
+
+    public String user_picture;
+
+    public void setTextid(Long textid)
     {
         this.textid = textid;
     }

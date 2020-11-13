@@ -66,4 +66,12 @@ public interface ICommentTableService
      * @return 结果
      */
     public int deleteCommentTableById(Long commentid);
+
+    /**
+     * 通过用户id获取用户的评论列表
+     *
+     * @param userid 需要查询的用户id
+     * @return 结果
+     */
+    public List<CommentTable> selectCommentTableByUserId(Long userid);
 }

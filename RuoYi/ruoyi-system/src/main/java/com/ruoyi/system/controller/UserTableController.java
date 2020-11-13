@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.ruoyi.common.json.JSON;
 import com.ruoyi.common.json.JSONObject;
-import com.ruoyi.system.service.ITextTableService;
+import com.ruoyi.system.common.Count;
+import com.ruoyi.system.domain.*;
+import com.ruoyi.system.service.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -15,8 +17,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.domain.UserTable;
-import com.ruoyi.system.service.IUserTableService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
@@ -40,7 +40,14 @@ public class UserTableController extends BaseController
     private IUserTableService userTableService;
     @Autowired
     private ITextTableService textTableService;
-
+    @Autowired
+    private ICommentTableService commentTableService;
+    @Autowired
+    private IUserinfoTableService userinfoTableService;
+    @Autowired
+    private IFavorTableService favorTableService;
+    @Autowired
+    private IFansTableService fansTableService;
     @RequiresPermissions("system:commen_control:view")
     @GetMapping()
     public String commen_control()
@@ -93,7 +100,18 @@ public class UserTableController extends BaseController
     @ResponseBody
     public AjaxResult addSave(UserTable userTable)
     {
-        return toAjax(userTableService.insertUserTable(userTable));
+        int  a = userTableService.insertUserTable(userTable);
+        Long userid = userTableService.selectUserTableByUserPhone(userTable.getPhone().toString()).getUserid();
+        UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(userid);
+        if(userinfoTable==null){
+            userinfoTable = new UserinfoTable();
+            userinfoTable.setFans((long)0);
+            userinfoTable.setFavor((long)0);
+            userinfoTable.setUserid(userid);
+            userinfoTable.setTextCount((long)0);
+            userinfoTableService.insertUserinfoTable(userinfoTable);
+        }
+        return toAjax(a);
     }
 
     /**
@@ -126,13 +144,36 @@ public class UserTableController extends BaseController
     @Log(title = "普通用户管理", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
-    public AjaxResult remove(String ids)
+    public AjaxResult remove(String ids,TextTable textTable)
     {
-        //删除用户的文章
-//        textTableService.selectTextTableList()
-//        textTableService.deleteTextTableById();
+        //删除用户时不删除点赞数,点赞列表依旧保留
+        //优先删除用户的点赞
+        List<FavorTable> favorTables = favorTableService.selectFavorTableByUserid(Long.parseLong(ids));
+        for(int i = 0;i<favorTables.size();++i)
+            favorTableService.deleteFavorTableById(favorTables.get(i).getFavorid());
+
+       // 删除用户的文章
+        List<TextTable> textTable1 = textTableService.selectTextTableList(textTable);
+        for(int i = 0;i<textTable1.size();++i)
+            if(textTable1.get(i).getUserid()==Long.parseLong(ids))
+                textTableService.deleteTextTableById(textTable1.get(i).getTextid());
+
+        //通过用户id 删除用户的评论
+        List<CommentTable>  commentTables= commentTableService.selectCommentTableByUserId(Long.parseLong(ids));
+
+        for(int i = 0;i<commentTables.size();++i)
+            commentTableService.deleteCommentTableById(commentTables.get(i).getCommentid());
+
+        //删除用户时自动取关所有关注的人
+        //通过用户id 删除用户的评论
+        List<FansTable> fansTables = fansTableService.selectFansTableByUserid(Long.parseLong(ids));
+        for(int i = 0;i<fansTables.size();++i)
+            fansTableService.deleteFansTableById(fansTables.get(i).getFansid());
+        //删除用户的粉丝数，关注数，文章数信息
+        userinfoTableService.deleteUserinfoTableById(Long.parseLong(ids));
         return toAjax(userTableService.deleteUserTableByIds(ids));
     }
+
 
     /**
      *
@@ -141,16 +182,19 @@ public class UserTableController extends BaseController
     @CrossOrigin
     @GetMapping("/login/verify")
     @ResponseBody
-    public String Login(String phone,String password){
-        System.out.println(phone+" "+password);
+    public JSONObject Login(String phone,String password){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("data","error");
         UserTable quereUser = userTableService.selectUserTableByUserPhone(phone);
         if (quereUser != null&&quereUser.getPassword().equals(password)) {
-            System.out.println(quereUser.toString());
-            return "success";
+            jsonObject.set("data","success");
+            jsonObject.put("userid",quereUser.getUserid());
         }
-        else return "error";
+        return jsonObject;
     }
-
+    /*
+     *  用户注册验证 添加用户信息到关注粉丝表
+     */
     @GetMapping("/register/verify")
     @ResponseBody
     public String Register(UserTable userTable){
@@ -159,9 +203,125 @@ public class UserTableController extends BaseController
         if(userTable1!=null)
             return "用户已经存在";
         int flag = userTableService.insertUserTable(userTable);
+        Long userid = userTableService.selectUserTableByUserPhone(userTable.getPhone().toString()).getUserid();
+        UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(userid);
+        if(userinfoTable==null){
+            userinfoTable = new UserinfoTable();
+            userinfoTable.setFans((long)0);
+            userinfoTable.setFavor((long)0);
+            userinfoTable.setUserid(userid);
+            userinfoTable.setTextCount((long)0);
+            userinfoTableService.insertUserinfoTable(userinfoTable);
+        }
         if (flag == 1) {
             return "success";
         }
         else return "error";
     }
+    /*
+    * 获取文章列表 和用户的基本信息
+    * */
+    @GetMapping("/login/getTextList")
+    @ResponseBody
+    public TableDataInfo text_list(TextTable textTable){
+
+        startPage();
+        List<TextTable> textTable1 = textTableService.selectTextTableList(textTable);
+        for(int i = 0;i<textTable1.size();++i){
+            UserTable userTable = userTableService.selectUserTableById(textTable1.get(i).getUserid());
+            textTable1.get(i).user_name = userTable.getUsername();
+            textTable1.get(i).user_picture = userTable.getPicture();
+        }
+//        return textTable1;
+        return getDataTable(textTable1);
+    }
+    /*
+    * 获取用户的 基本信息，关注，粉丝信息
+    * */
+    @GetMapping("/login/getUserInfo")
+    @ResponseBody
+    public JSONObject User_Info(Long userid){
+        UserTable userTable1 = userTableService.selectUserTableById(userid);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("picture",userTable1.getPicture());
+        jsonObject.put("username",userTable1.getUsername());
+        jsonObject.put("userinfo",userTable1);
+        return jsonObject;
+    }
+/*
+* 返回文章的详细信息和评论的列表
+* */
+    @GetMapping("/login/getTextInfo")
+    @ResponseBody
+    public JSONObject Text_Info(Long textid){
+        System.out.println(textid);
+        TextTable textTable = textTableService.selectTextTableById(textid);
+        UserTable userTable = userTableService.selectUserTableById(textTable.getUserid());
+        List<CommentTable> commentTables = commentTableService.selectCommentTableByTextId(textid);
+        UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(textTable.getUserid());
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("username",userTable.getUsername());
+        jsonObject.put("picture",userTable.getPicture());
+        jsonObject.put("textinfo",textTable);
+        jsonObject.put("user_info",userinfoTable);
+        for(int i = 0;i<commentTables.size();++i)
+        {
+            UserTable userTable1 = userTableService.selectUserTableById(commentTables.get(i).getUserid());
+            commentTables.get(i).setcUser_n(userTable1.getUsername());
+            commentTables.get(i).setcUser_p(userTable1.getPicture());
+        }
+        jsonObject.put("comment_list",commentTables);
+
+//        boolean flag = fansTableService.selectFansTableById();
+        return jsonObject;
+    }
+    /*
+    * 分页获取文章列表
+     */
+    @GetMapping("/login/getTextLList")
+    @ResponseBody
+    public TableDataInfo llist(UserTable userTable)
+    {
+        startPage();
+        List<UserTable> list = userTableService.selectUserTableList(userTable);
+        return getDataTable(list);
+    }
+    /*
+    * 用户修改个人信息
+    * */
+    @GetMapping("/login/editUserInfo")
+    @ResponseBody
+    public JSONObject user_edit(UserTable userTable){
+        JSONObject jsonObject = new JSONObject();
+        int flag = userTableService.updateUserTable(userTable);
+        if(flag>0)
+            jsonObject.put("result","success");
+        else jsonObject.put("result","error");
+        return jsonObject;
+    }
+    /*
+    * 通过用户id用户信息，和文章列表
+    * */
+    @GetMapping("/login/getUserText")
+    @ResponseBody
+    public JSONObject get_User_Text(Long userid){
+        UserTable userTable1 = userTableService.selectUserTableById(userid);
+        UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(userid);
+        JSONObject jsonObject = new JSONObject();
+        List<TextTable>textTables = textTableService.selectTextTableByUserId(userid);
+        jsonObject.put("picture",userTable1.getPicture());
+        jsonObject.put("username",userTable1.getUsername());
+        jsonObject.put("userinfoTable",userinfoTable);
+        jsonObject.put("text_list",textTables);
+        return jsonObject;
+    }
+    /*
+    * 修改用户前  获取用户信息
+    * */
+    @GetMapping("/login/edituser")
+    @ResponseBody
+    public UserTable getUser(Long userid){
+        return userTableService.selectUserTableById(userid);
+    }
 }
+

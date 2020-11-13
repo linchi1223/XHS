@@ -66,4 +66,19 @@ public interface IFavorTableService
      * @return 结果
      */
     public int deleteFavorTableById(Long favorid);
+
+    /**
+     * 查询是否点赞
+     *
+     * @param favorTable 需要删除的数据ID
+     * @return 结果
+     */
+    public FavorTable selectFavorTableByUseridAndTextid(FavorTable favorTable);
+    /**
+     * 查询是用户的点赞列表
+     *
+     * @param userid 需要查询的用户id
+     * @return 结果
+     */
+    public List<FavorTable> selectFavorTableByUserid(Long userid);
 }
