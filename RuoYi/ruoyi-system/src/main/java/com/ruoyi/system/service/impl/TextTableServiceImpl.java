@@ -1,6 +1,10 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.Date;
 import java.util.List;
+
+import com.ruoyi.system.domain.UserinfoTable;
+import com.ruoyi.system.mapper.UserinfoTableMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.TextTableMapper;
@@ -19,6 +23,8 @@ public class TextTableServiceImpl implements ITextTableService
 {
     @Autowired
     private TextTableMapper textTableMapper;
+    @Autowired
+    private UserinfoTableMapper userinfoTableMapper;
 
     /**
      * 查询文章管理
@@ -53,6 +59,11 @@ public class TextTableServiceImpl implements ITextTableService
     @Override
     public int insertTextTable(TextTable textTable)
     {
+        if(textTable.getUptime()==null)
+            textTable.setUptime(new Date());
+        UserinfoTable userinfoTable = userinfoTableMapper.selectUserinfoTableById(textTable.getUserid());
+        userinfoTable.setTextCount(userinfoTable.getTextCount()+1);
+        userinfoTableMapper.updateUserinfoTable(userinfoTable);
         return textTableMapper.insertTextTable(textTable);
     }
 
@@ -77,6 +88,9 @@ public class TextTableServiceImpl implements ITextTableService
     @Override
     public int deleteTextTableByIds(String ids)
     {
+        UserinfoTable userinfoTable = userinfoTableMapper.selectUserinfoTableById(Long.parseLong(ids));
+        userinfoTable.setTextCount(userinfoTable.getTextCount()-1);
+        userinfoTableMapper.updateUserinfoTable(userinfoTable);
         return textTableMapper.deleteTextTableByIds(Convert.toStrArray(ids));
     }
 
@@ -89,6 +103,9 @@ public class TextTableServiceImpl implements ITextTableService
     @Override
     public int deleteTextTableById(Long textid)
     {
+        UserinfoTable userinfoTable = userinfoTableMapper.selectUserinfoTableById(textid);
+        userinfoTable.setTextCount(userinfoTable.getTextCount()-1);
+        userinfoTableMapper.updateUserinfoTable(userinfoTable);
         return textTableMapper.deleteTextTableById(textid);
     }
     /**

@@ -91,4 +91,13 @@ public class CollectTableServiceImpl implements ICollectTableService
     {
         return collectTableMapper.deleteCollectTableById(collid);
     }
+    /**
+     * 删除用户收藏管理信息
+     *
+     * @param collid 用户收藏管理ID
+     * @return 结果
+     */
+    public void updata(Long collid)
+    {
+    }
 }

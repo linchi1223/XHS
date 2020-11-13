@@ -1,5 +1,6 @@
 package com.ruoyi.system.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ruoyi.common.json.JSON;
@@ -48,6 +49,8 @@ public class UserTableController extends BaseController
     private IFavorTableService favorTableService;
     @Autowired
     private IFansTableService fansTableService;
+    @Autowired
+    private IClassifyTableService classifyTableService;
     @RequiresPermissions("system:commen_control:view")
     @GetMapping()
     public String commen_control()
@@ -160,7 +163,6 @@ public class UserTableController extends BaseController
 
         //通过用户id 删除用户的评论
         List<CommentTable>  commentTables= commentTableService.selectCommentTableByUserId(Long.parseLong(ids));
-
         for(int i = 0;i<commentTables.size();++i)
             commentTableService.deleteCommentTableById(commentTables.get(i).getCommentid());
 
@@ -300,6 +302,7 @@ public class UserTableController extends BaseController
         return jsonObject;
     }
     /*
+    * 用户信息界面 包含用户信息和用户发布的文章列表
     * 通过用户id用户信息，和文章列表
     * */
     @GetMapping("/login/getUserText")
@@ -322,6 +325,36 @@ public class UserTableController extends BaseController
     @ResponseBody
     public UserTable getUser(Long userid){
         return userTableService.selectUserTableById(userid);
+    }
+
+    /*
+     * 用户上传文章
+     * */
+    @GetMapping("/login/uptext")
+    @ResponseBody
+    public JSONObject uptext(TextTable textTable){
+        JSONObject jsonObject = new JSONObject();
+        int flag = textTableService.insertTextTable(textTable);
+        if(flag!=0)
+            jsonObject.put("result","success");
+        else jsonObject.put("result","fail");
+        return jsonObject;
+    }
+    /*
+     * 用户上传前获取分类号
+     * */
+    @GetMapping("/login/getclassify")
+    @ResponseBody
+    public JSONObject getclassify(ClassifyTable classifyTable){
+        JSONObject jsonObject = new JSONObject();
+        List<ClassifyTable> classifyTables = classifyTableService.selectClassifyTableList(classifyTable);
+        for(int i=0;i<classifyTables.size();++i){
+            ArrayList<String> list = new ArrayList<>();
+            list.add(classifyTables.get(i).getCsid().toString());
+            list.add(classifyTables.get(i).getCname());
+            jsonObject.put(""+i,list);
+        }
+        return jsonObject;
     }
 }
 
