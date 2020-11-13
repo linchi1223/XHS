@@ -75,6 +75,7 @@ export default {
         that.$message("请输入电话号码");
       } else {
         that = this;
+        
         const a = axios
           .get("/api/system/commen_control/register/verify", {
             // 还可以直接把参数拼接在url后边

@@ -71,11 +71,12 @@ export default {
           })
           .then(function (res) {
             console.log(res);
-            if (res.data == "error") return th.$message("用户名或密码错误");
-            if (res.data == "success") {
+            if (res.data.data == "error") return th.$message("用户名或密码错误");
+            if (res.data.data == "success") {
+              console.log(1)
               that.$message("登入成功");
-              window.sessionStorage.setItem("username", that.loginForm.username);
-              window.sessionStorage.setItem("token", that.loginForm.username);
+              // window.sessionStorage.setItem("username", that.loginForm.username);
+              window.sessionStorage.setItem("userid", res.data.userid);
               setTimeout(function () {
                 that.$router.push("/index");
               }, 1500);

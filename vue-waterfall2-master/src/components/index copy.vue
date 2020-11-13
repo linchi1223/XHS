@@ -224,7 +224,7 @@
           {{ username }}
         </div>
         <div class="userimg Fright">
-          <el-avatar shape="square" :size="50" :src="squareUrl"> </el-avatar>
+          <el-avatar shape="square" :size="50" :src="squareUrl"></el-avatar>
         </div>
       </div>
       <div class="headerbg">
@@ -242,31 +242,21 @@
           class="cell-item"
           :key="index"
           v-for="(item, index) in data"
-          @click="comments(item.textid)"
+          @click="comments(index)"
         >
-          <img v-if="item.pictures" :src="item.pictures[0]" alt="加载错误" />
+          <img v-if="item.img" :src="item.img" alt="加载错误" />
           <div class="item-body">
-            <div class="item-desc">{{ item.textname }}</div>
+            <div class="item-desc">{{ item.title }}</div>
             <div class="item-footer">
-              <div>
-                <el-avatar
-                  v-if="item.user_picture"
-                  class="avatar"
-                  v-bind:src="item.user_picture"
-                >
-                </el-avatar>
-              </div>
-              <!-- <div
-                v-if="item.user_picture"
+              <div
+                v-if="item.avatar"
                 class="avatar"
-                :style="{
-                  backgroundImage: `url(${urladdress + item.user_picture})`,
-                }"
-              ></div> -->
-              <div class="name">{{ item.user_name }}</div>
-              <div class="like" :class="item.favor ? 'active' : ''">
+                :style="{ backgroundImage: `url(${item.avatar})` }"
+              ></div>
+              <div class="name">{{ item.user }}</div>
+              <div class="like" :class="item.liked ? 'active' : ''">
                 <i></i>
-                <div class="like-total">{{ item.favor }}</div>
+                <div class="like-total">{{ item.like }}</div>
               </div>
             </div>
           </div>
@@ -276,12 +266,7 @@
     <loading :show="loading" />
   </div>
 </template>
-<style>
-.el-avatar > img {
-  margin: auto;
-  width: 100% !important;
-}
-</style>
+
 <script>
 /*
   注意:
@@ -310,12 +295,8 @@ export default {
       username: "",
       loading: false,
       gitHubData: {},
-      originData: {},
-
-      // urladdress: "http://192.168.94.138:8080",
-      urladdress: "http://192.168.31.121:8080",
-      // urladdress: "http://192.168.46.124:8080",
-      // originData: json,
+      // originData:'',
+      originData: json,
     };
   },
   computed: {
@@ -342,8 +323,8 @@ export default {
     },
     // 页面跳转
     comments(id) {
-      console.log(id);
-      this.$router.push({ name: "Comment", params: { textId: id } });
+      // console.log(1)
+      this.$router.push({ name: "Comment", params: {} });
     },
     user() {
       this.$router.push({ name: "User", params: {} });
@@ -377,70 +358,25 @@ export default {
   },
   mounted() {
     var self = this;
-    // this.data = this.originData;
+    this.data = this.originData;
     this.getGitHub();
-
     axios
       .get("/api/system/commen_control/login/getTextList", {
         // 还可以直接把参数拼接在url后边
         params: {},
       })
       .then(function (res) {
-        console.log("登入");
-        for (var i = 0; i < res.data.rows.length; i++) {
-          res.data.rows[i].user_picture =
-            self.urladdress + res.data.rows[i].user_picture;
-
-          var pictures = res.data.rows[i].picture.split(",");
-          for (var j = 0; j < pictures.length; j++) {
-            pictures[j] = self.urladdress + pictures[j];
-          }
-          res.data.rows[i].pictures = pictures;
-        }
-        self.data = res.data.rows;
-        console.log(self.data);
+        console.log(res.data.rows);
       })
       .catch(function (error) {
         console.log(error);
       });
-    var userid = window.sessionStorage.getItem("userid");
-    if (userid == null) {
+    var tokenname = window.sessionStorage.getItem("username");
+    if (tokenname == null) {
       this.is_login = false;
     } else {
       this.is_login = true;
-      axios
-        .get("/api/system/commen_control/login/getUserInfo", {
-          // 还可以直接把参数拼接在url后边
-          params: { userid: userid },
-        })
-        .then(function (ress) {
-          console.log(ress);
-          self.username = ress.data.username;
-          if (
-            ress.data.picture !=
-            "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png"
-          ) {
-            self.squareUrl = self.urladdress + ress.data.picture;
-          } else {
-            self.squareUrl = ress.data.picture;
-          }
-          window.sessionStorage.setItem("username", self.username);
-          window.sessionStorage.setItem("userimg", self.squareUrl);
-          for (var i = 0; i < ress.data.rows.length; i++) {
-            ress.data.rows[i].user_picture =
-              self.urladdress + ress.data.rows[i].user_picture;
-            var pictures = ress.data.rows[i].picture.split(",");
-            for (var j = 0; j < pictures.length; j++) {
-              pictures[j] = self.urladdress + pictures[j];
-            }
-            ress.data.rows[i].pictures = pictures;
-          }
-          self.data = ress.data.rows;
-          console.log(self.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      this.username = tokenname;
     }
   },
 };

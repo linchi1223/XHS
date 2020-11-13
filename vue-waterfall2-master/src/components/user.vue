@@ -14,7 +14,7 @@
             height: 80px;
           "
         >
-          用户名
+          {{ username }}
         </h1>
         <button class="btn btn-defult btnn" @click="fabu()">发布</button>
       </div>
@@ -42,118 +42,6 @@
             </p>
           </div>
         </div>
-        <div class="media">
-          <a href="#"><img src="../assets/logo.png" alt="comment" /></a>
-          <div class="media-body">
-            <h5><a href="#">John F. Medina</a></h5>
-            <span class="date">25 July 2020</span>
-            <p>
-              But I must explain to you how all this mistaken idea of denouncing
-              pleasure and praising pawas born and I will give you a complete
-              account
-              测试,测试,测试测试测试测试,测试测试测试,测试,测试测试测试,测试,测试测试测
-              试测试,,测试,,测试测试
-            </p>
-          </div>
-        </div>
-        <div class="media">
-          <a href="#"><img src="../assets/logo.png" alt="comment" /></a>
-          <div class="media-body">
-            <h5><a href="#">John F. Medina</a></h5>
-            <span class="date">25 July 2020</span>
-            <p>
-              But I must explain to you how all this mistaken idea of denouncing
-              pleasure and praising pawas born and I will give you a complete
-              account
-              测试,测试,测试测试测试测试,测试测试测试,测试,测试测试测试,测试,测试测试测
-              试测试,,测试,,测试测试
-            </p>
-          </div>
-        </div>
-        <div class="media">
-          <a href="#"><img src="../assets/logo.png" alt="comment" /></a>
-          <div class="media-body">
-            <h5><a href="#">John F. Medina</a></h5>
-            <span class="date">25 July 2020</span>
-            <p>
-              But I must explain to you how all this mistaken idea of denouncing
-              pleasure and praising pawas born and I will give you a complete
-              account
-              测试,测试,测试测试测试测试,测试测试测试,测试,测试测试测试,测试,测试测试测
-              试测试,,测试,,测试测试
-            </p>
-          </div>
-        </div>
-        <div class="media">
-          <a href="#"><img src="../assets/logo.png" alt="comment" /></a>
-          <div class="media-body">
-            <h5><a href="#">John F. Medina</a></h5>
-            <span class="date">25 July 2020</span>
-            <p>
-              But I must explain to you how all this mistaken idea of denouncing
-              pleasure and praising pawas born and I will give you a complete
-              account
-              测试,测试,测试测试测试测试,测试测试测试,测试,测试测试测试,测试,测试测试测
-              试测试,,测试,,测试测试
-            </p>
-          </div>
-        </div>
-        <div class="media">
-          <a href="#"><img src="../assets/logo.png" alt="comment" /></a>
-          <div class="media-body">
-            <h5><a href="#">John F. Medina</a></h5>
-            <span class="date">25 July 2020</span>
-            <p>
-              But I must explain to you how all this mistaken idea of denouncing
-              pleasure and praising pawas born and I will give you a complete
-              account
-              测试,测试,测试测试测试测试,测试测试测试,测试,测试测试测试,测试,测试测试测
-              试测试,,测试,,测试测试
-            </p>
-          </div>
-        </div>
-        <div class="media">
-          <a href="#"><img src="../assets/logo.png" alt="comment" /></a>
-          <div class="media-body">
-            <h5><a href="#">John F. Medina</a></h5>
-            <span class="date">25 July 2020</span>
-            <p>
-              But I must explain to you how all this mistaken idea of denouncing
-              pleasure and praising pawas born and I will give you a complete
-              account
-              测试,测试,测试测试测试测试,测试测试测试,测试,测试测试测试,测试,测试测试测
-              试测试,,测试,,测试测试
-            </p>
-          </div>
-        </div>
-        <div class="media">
-          <a href="#"><img src="../assets/logo.png" alt="comment" /></a>
-          <div class="media-body">
-            <h5><a href="#">John F. Medina</a></h5>
-            <span class="date">25 July 2020</span>
-            <p>
-              But I must explain to you how all this mistaken idea of denouncing
-              pleasure and praising pawas born and I will give you a complete
-              account
-              测试,测试,测试测试测试测试,测试测试测试,测试,测试测试测试,测试,测试测试测
-              试测试,,测试,,测试测试
-            </p>
-          </div>
-        </div>
-        <div class="media">
-          <a href="#"><img src="../assets/logo.png" alt="comment" /></a>
-          <div class="media-body">
-            <h5><a href="#">John F. Medina</a></h5>
-            <span class="date">25 July 2020</span>
-            <p>
-              But I must explain to you how all this mistaken idea of denouncing
-              pleasure and praising pawas born and I will give you a complete
-              account
-              测试,测试,测试测试测试测试,测试测试测试,测试,测试测试测试,测试,测试测试测
-              试测试,,测试,,测试测试
-            </p>
-          </div>
-        </div>
       </div>
     </div>
     <div class="Cuserinfo">
@@ -163,7 +51,7 @@
             <a bpfilter="page_frame" href="" title="薛定的小谔猫"
               ><img
                 class="W_face_radius"
-                src="https://tvax1.sinaimg.cn/crop.0.0.828.828.1024/b4794d17ly8gds0hpo8qij20n00n00ud.jpg?KID=imgbed,tva&amp;Expires=1603788250&amp;ssig=DnwD1levlx"
+                :src="userimg"
                 width="60"
                 height="60"
                 alt="薛定的小谔猫"
@@ -215,6 +103,9 @@ export default {
     return {
       followed: false,
       textarea: "",
+      userid: "",
+      username: "",
+      userimg: "",
     };
   },
   methods: {
@@ -226,6 +117,24 @@ export default {
       // this.$router.push("/lod");
       this.$router.push({ name: "Userchange", params: {} });
     },
+  },
+  mounted() {
+    this.userid = window.sessionStorage.getItem("userid");
+    this.username = window.sessionStorage.getItem("username");
+    this.userimg = window.sessionStorage.getItem("userimg");
+    axios
+      .get("/api/system/commen_control/login/getUserText", {
+        // 还可以直接把参数拼接在url后边
+        params: {
+          userid: this.userid,
+        },
+      })
+      .then(function (res) {
+        console.log(res)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   },
 };
 </script>

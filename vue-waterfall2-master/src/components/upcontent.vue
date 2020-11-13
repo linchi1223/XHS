@@ -5,7 +5,16 @@
         <li class="breadcrumb-item active" aria-current="page">图片</li>
       </ol>
     </nav>
-    <el-upload action="#" list-type="picture-card" :auto-upload="false">
+    <el-upload
+      :action="urladdress+'/common/upload1'"
+      list-type="picture-card"
+      :on-success="handleUpSuccess"
+      :on-error="handleUpError"
+      :on-change="handleUpUpload"
+      :on-preview="handleUpPreview"
+      :on-remove="handleUpRemove"
+      :file-list="fileList" >
+
       <i slot="default" class="el-icon-plus"></i>
       <div slot="file" slot-scope="{ file }">
         <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
@@ -48,8 +57,7 @@
       v-model="textarea1"
     >
     </el-input>
-      <el-button class="buttongo">发布</el-button>
-    
+    <el-button class="buttongo" @click="fabuwenzhang()">发布</el-button>
   </div>
 </template>
 <style scoped>
@@ -60,8 +68,8 @@
 nav {
   margin-top: 10px;
 }
-.buttongo{
-  float:right;
+.buttongo {
+  float: right;
   margin: 10px;
 }
 </style>
@@ -74,19 +82,47 @@ export default {
       dialogVisible: false,
       disabled: false,
       textarea1: "",
-      textarea2: "",
+      // urladdress: "http://192.168.46.124:8080",
+      urladdress: "http://192.168.31.121:8080",
+      fileList: [],
+      reqUploadImgApi: "http://192.168.31.121:8080" + "/common/upload1",
+      form: {
+        photo: "",
+      },
     };
   },
+
   methods: {
-    handleRemove(file) {
-      console.log(file);
+    headers() {
+      return {
+        Authorization: this.userid, // 直接从本地获取token就行
+      };
     },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
+ 
+    handleUpSuccess(response, file, fileList) {
+      console.log(response);
+      if (response.code == 200) {
+        this.ruleForm.cardUpImg = response.data[0];
+        this.imagesUp = response.data;
+        this.hideUp = fileList.length == 1;
+        this.$message.success(response.msg);
+      }
     },
-    handleDownload(file) {
+    handleUpError(err, file, fileList) {},
+    // 删除图片
+    handleUpRemove(file, fileList) {
+      this.ruleForm.cardUpImg = "";
+      this.imagesUp = [];
+      this.hideUp = false;
+    },
+    // 预览图片
+    handleUpPreview(file) {
+      this.$refs.viewer.handleDialog(true);
+    },
+    // 上传图片
+    handleUpUpload(file, fileList) {
       console.log(file);
+      this.hideUp = true;
     },
   },
 };

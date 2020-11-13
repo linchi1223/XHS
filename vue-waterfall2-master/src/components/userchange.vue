@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-      <el-tag type="info">头像</el-tag>
+    <el-tag type="info">头像</el-tag>
     <el-upload
       class="avatar-uploader"
       action="localhost:8080"
@@ -11,12 +11,18 @@
       <img v-if="imageUrl" :src="imageUrl" class="avatar" />
       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
-     <el-tag type="info">用户名</el-tag>
-    <el-input placeholder="用户名" v-model="username" clearable>{{username}} </el-input>
-     <el-tag type="info">邮箱</el-tag>
-    <el-input placeholder="邮箱" v-model="email" clearable>{{email}} </el-input>
-     <el-tag type="info">手机号</el-tag>
-    <el-input placeholder="手机号" v-model="phone" clearable>{{phone}} </el-input>
+    <el-tag type="info">用户名</el-tag>
+    <el-input placeholder="用户名" v-model="username" clearable
+      >{{ username }}
+    </el-input>
+    <el-tag type="info">密码</el-tag>
+    <el-input show-password placeholder="密码" v-model="password" clearable
+      >{{ password }}
+    </el-input>
+    <el-tag type="info">手机号</el-tag>
+    <el-input placeholder="手机号" v-model="phone" clearable
+      >{{ phone }}
+    </el-input>
     <el-button>保存</el-button>
   </div>
 </template>
@@ -26,9 +32,13 @@ export default {
   data() {
     return {
       username: "123",
-      email: "123",
+      password: "123",
       phone: "123",
-      imageUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
+      userid: "",
+      username: "",
+      userimg: "",
+      imageUrl:
+        "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
     };
   },
   methods: {
@@ -48,6 +58,25 @@ export default {
       return isJPG && isLt2M;
     },
   },
+  mounted() {
+    this.userid = window.sessionStorage.getItem("userid");
+    this.username = window.sessionStorage.getItem("username");
+    this.userimg = window.sessionStorage.getItem("userimg");
+    console.log(window.sessionStorage.getItem("userid"));
+    axios
+      .get("/api/system/commen_control/login/edituser", {
+        // 还可以直接把参数拼接在url后边
+        params: {
+          userid: this.userid,
+        },
+      })
+      .then(function (res) {
+        console.log(res);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  },
 };
 </script>
 
@@ -56,13 +85,14 @@ export default {
   width: 1000px;
   margin: auto;
 }
-.el-input,.el-tag {
+.el-input,
+.el-tag {
   margin-top: 10px;
   margin-bottom: 5px;
 }
-.el-button{
-      margin-top: 10px;
-      float:right;
+.el-button {
+  margin-top: 10px;
+  float: right;
 }
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;

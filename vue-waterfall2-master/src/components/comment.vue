@@ -6,162 +6,63 @@
           class="username"
           style="line-height: 60px; display: line-block; margin-left: 25px"
         >
-          文章主题名字文章主题名字文章主题名字文章主题名字文章123
+          {{ textname }}
         </h1>
         <!-- <button class="btn btn-defult btnn">发布</button> -->
       </div>
       <hr />
       <div class="item">
-        <div
-          id="carouselExampleCaptions"
-          class="carousel slide carousel-fade"
-          data-ride="carousel"
-        >
-          <ol class="carousel-indicators">
-            <li
-              data-target="#carouselExampleCaptions"
-              data-slide-to="0"
-              class="active"
-            ></li>
-            <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
-            <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
-          </ol>
-          <div class="carousel-inner">
-            <div class="carousel-item active">
+        <div class="block" style="margin-bottom: 10px">
+          <el-carousel height="750px">
+            <el-carousel-item
+              v-for="(itempic,index) in pictures"
+              :key="index"
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
               <img
-                src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1603967333623&di=3684e4b06143df36c480437f29f10693&imgtype=0&src=http%3A%2F%2Fattachments.gfan.com%2Fforum%2F201503%2F19%2F211608ztcq7higicydxhsy.jpg"
+                v-bind:src="itempic"
                 class="d-block w-100"
+                style="max-width: 95%; height-width: 100%"
                 alt="..."
               />
-              <div class="carousel-caption d-none d-md-block">
-                <h5>First slide label</h5>
-                <p>
-                  Nulla vitae elit libero, a pharetra augue mollis interdum.
-                </p>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <img
-                src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1603967333623&di=a26547d4ad76ac44f5b3d1af135f3d9f&imgtype=0&src=http%3A%2F%2Fattach.bbs.miui.com%2Fforum%2F201308%2F23%2F220651x9b0h4kru904ozre.jpg"
-                class="d-block w-100"
-                alt="..."
-              />
-              <div class="carousel-caption d-none d-md-block">
-                <h5>Second slide label</h5>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <img
-                src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1603967333622&di=53ca93d4e86181e81358d7f666248b11&imgtype=0&src=http%3A%2F%2Fb.hiphotos.baidu.com%2Fzhidao%2Fpic%2Fitem%2F63d0f703918fa0ece9221cfe279759ee3c6ddb58.jpg"
-                class="d-block w-100"
-                alt="..."
-              />
-              <div class="carousel-caption d-none d-md-block">
-                <h5>Third slide label</h5>
-                <p>
-                  Praesent commodo cursus magna, vel scelerisque nisl
-                  consectetur.
-                </p>
-              </div>
-            </div>
-          </div>
-          <a
-            class="carousel-control-prev"
-            href="#carouselExampleCaptions"
-            role="button"
-            data-slide="prev"
-          >
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-          </a>
-          <a
-            class="carousel-control-next"
-            href="#carouselExampleCaptions"
-            role="button"
-            data-slide="next"
-          >
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-          </a>
+            </el-carousel-item>
+          </el-carousel>
         </div>
-        <div class="wenzhang">
-          tefn;lsadflkjskldf lkdsjfkl sjakl tefn;lsadflkjskldf lkdsjfkl sjakl
-          tefn;lsadflkjskldf lkdsjfkl sjakl tefn;lsadflkjskldf lkdsjfkl sjakl
-          tefn;lsadflkjskldf lkdsjfkl sjakl tefn;lsadflkjskldf lkdsjfkl sjakl
-          tefn;lsadflkjskldf lkdsjfkl sjakl tefn;lsadflkjskldf lkdsjfkl sjakl
-          tefn;lsadflkjskldf lkdsjfkl sjakl tefn;lsadflkjskldf lkdsjfkl sjakl
-          <p>
-            tefn;lsadflkjskldf lkdsjfkl sjakl tefn;lsadflkjskldf lkdsjfkl sjakl
-            tefn;lsadflkjskldf lkdsjfkl sjakl tefn;lsadflkjskldf lkdsjfkl sjakl
-            tefn;lsadflkjskldf lkdsjfkl sjakl tefn;lsadflkjskldf lkdsjfkl sjakl
-            tefn;lsadflkjskldf lkdsjfkl sjakl
-          </p>
-          <p>
-            文章主题名字文章主题名字文章主题名字文章主题名字文章123文章主题名字文章主题名字文章主题名字文章主题名字文章123文章主题名字文章主题名字文章主题名字文章主题名字文章123文章主题名字文章主题名字文章主题名字文章主题名字文章123
-          </p>
-          <p>
-            文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容
-            文章内容文章内容文章内容
-          </p>
-          <p>
-            文章主题名字文章主题名字文章主题名字文章主题名字文章123文章主题名字文章主题名字文章主题名字文章主题名字文章123文章主题名字文章主题名字文章主题名字文章主题名字文章123文章主题名字文章主题名字文章主题名字文章主题名字文章123
-          </p>
-          <p>
-            文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容
-            文章内容文章内容文章内容
-          </p>
 
-          <p>
-            文章主题名字文章主题名字文章主题名字文章主题名字文章123文章主题名字文章主题名字文章主题名字文章主题名字文章123文章主题名字文章主题名字文章主题名字文章主题名字文章123文章主题名字文章主题名字文章主题名字文章主题名字文章123
-          </p>
-          <p>
-            文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容
-            文章内容文章内容文章内容
-          </p>
-          <p>
-            文章主题名字文章主题名字文章主题名字文章主题名字文章123文章主题名字文章主题名字文章主题名字文章主题名字文章123文章主题名字文章主题名字文章主题名字文章主题名字文章123文章主题名字文章主题名字文章主题名字文章主题名字文章123
-          </p>
-          <p>
-            文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容
-            文章内容文章内容文章内容
-          </p>
-        </div>
+        <div class="wenzhang" v-html="textcontent"></div>
         <hr />
         <div class="commentinput">
           <div class="media">
-            <a href="#"><img src="../assets/logo.png" alt="comment" /></a>
+            <!-- <a href="#"><img v-bind:src="userimg" alt="comment" /></a> -->
+            <el-avatar shape="square" :size="50" :src="userimg"> </el-avatar>
             <div class="media-body">
-          <div class="card-body">
-              <div class="textup">
-                <el-input
-                  type="textarea"
-                  :autosize="{ minRows: 4, maxRows: 4}"
-                  placeholder="请输入内容"
-                  v-model="textarea"
-                >
-                </el-input>
+              <div class="card-body">
+                <div class="textup">
+                  <el-input
+                    type="textarea"
+                    :autosize="{ minRows: 4, maxRows: 4 }"
+                    placeholder="请输入内容"
+                    v-model="textarea"
+                  >
+                  </el-input>
+                </div>
               </div>
             </div>
-              
-            </div>
-          <button class="btn btn-defualt">发送</button>
+            <button class="btn btn-defualt" @click="fasong()">发送</button>
           </div>
         </div>
         <div class="comments">
-
-          
-          <div class="media">
-            <a href="#"><img src="../assets/logo.png" alt="comment" /></a>
+          <div class="media" v-for="(item1,index) in comment_list" :key="index">
+            <a href="#"><img v-bind:src="item1.cUser_p" alt="comment" /></a>
             <div class="media-body">
-              <h5><a href="#">John F. Medina</a></h5>
-              <span class="date">25 July 2020</span>
+              <h5><a href="#">{{item1.cUser_n}}</a></h5>
+              <span class="date">{{item1.time}}</span>
               <p>
-                But I must explain to you how all this mistaken idea of
-                denouncing pleasure and praising pawas born and I will give you
-                a complete account
-                测试,测试,测试测试测试测试,测试测试测试,测试,测试测试测试,测试,测试测试测
-                试测试,,测试,,测试测试
+                {{item1.comment}}
               </p>
             </div>
           </div>
@@ -172,13 +73,13 @@
       <div class="W_person_info">
         <div class="cover">
           <div class="headpic">
-            <a bpfilter="page_frame" href="" title="薛定的小谔猫"
+            <a bpfilter="page_frame" href="" title="textuser"
               ><img
                 class="W_face_radius"
-                src="https://tvax1.sinaimg.cn/crop.0.0.828.828.1024/b4794d17ly8gds0hpo8qij20n00n00ud.jpg?KID=imgbed,tva&amp;Expires=1603788250&amp;ssig=DnwD1levlx"
+                :src="textuserimg"
                 width="60"
                 height="60"
-                alt="薛定的小谔猫"
+                alt="textuser"
             /></a>
           </div>
         </div>
@@ -188,27 +89,27 @@
               bpfilter="page_frame"
               href=""
               class="name S_txt1"
-              title="薛定的小谔猫"
-              >薛定的小谔猫</a
+              title="textuser"
+              >{{ textuser }}</a
             >
           </div>
           <ul class="user_atten clearfix W_f18">
             <li class="S_line1">
               <a bpfilter="page_frame" href="follow" class="S_txt1"
-                ><strong node-type="follow">78</strong
+                ><strong node-type="follow">{{ user_info.favor }}</strong
                 ><span class="S_txt2">关注</span></a
               >
             </li>
             <li class="S_line1">
               <a bpfilter="page_frame" href="fans" class="S_txt1"
-                ><strong node-type="fans">86</strong
+                ><strong node-type="fans">{{ user_info.fans }}</strong
                 ><span class="S_txt2">粉丝</span></a
               >
             </li>
             <li class="S_line1">
               <a bpfilter="page_frame" href="profile" class="S_txt1"
-                ><strong node-type="weibo">47</strong
-                ><span class="S_txt2">微博</span></a
+                ><strong node-type="weibo">{{ user_info.textCount }}</strong
+                ><span class="S_txt2">文章</span></a
               >
             </li>
           </ul>
@@ -228,11 +129,92 @@
 export default {
   data() {
     return {
-      followed: true,
-      textarea:''
+      // urladdress: "http://192.168.94.138:8080",
+      urladdress: "http://192.168.31.121:8080",
+      //  urladdress: "http://192.168.46.124:8080",
+      followed: false,
+      textarea: "",
+      textId: "",
+      comment_list: [],
+      picture: "",
+      username: "",
+      textname: "",
+      uptime: "",
+      textcontent: "",
+      pictures: [],
+      user_info: [],
+      textuser: "",
+      textuserimg: "",
+      userimg: "",
+      userid: "",
     };
   },
-  methods: {},
+  methods: {
+    // 发送评论
+    fasong() {
+      var that = this;
+      axios
+        .get("/api/common/insert_comment", {
+          // 还可以直接把参数拼接在url后边
+          params: {
+            userid: that.userid,
+            comment: that.textarea,
+            textid: window.sessionStorage.getItem("textId"),
+          },
+        })
+        .then(function (res) {
+          console.log(res);
+          that.comment_list = res.data.comment_list.reverse();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+  },
+  mounted() {
+    var that = this;
+    // 刷新的时候进行
+    that.userid = window.sessionStorage.getItem("userid");
+    that.userimg = window.sessionStorage.getItem("userimg");
+    var textId = this.$route.params.textId;
+    if (textId == null) {
+      textId = window.sessionStorage.getItem("textId");
+    }
+    window.sessionStorage.setItem("textId", textId);
+    // 获取信息
+    axios
+      .get("/api/system/commen_control/login/getTextInfo", {
+        // 还可以直接把参数拼接在url后边
+        params: {
+          textid: textId,
+        },
+      })
+      .then(function (res) {
+        console.log(res);
+        var datas = res.data;
+        var textinfo = res.data.textinfo;
+        var picturescount = [];
+        that.textname = textinfo.textname;
+        that.textcontent = textinfo.textcontent;
+        var pictures = textinfo.picture.split(",");
+        console.log(pictures);
+        for (var j = 0; j < pictures.length; j++) {
+          pictures[j] = that.urladdress + pictures[j];
+        }
+        that.pictures = pictures;
+        setTimeout(function () {
+          $(".imgs").first().addClass("active");
+        }, 300);
+        that.user_info = res.data.user_info;
+        that.textuser = res.data.username;
+        that.textuserimg = that.urladdress + res.data.picture;
+        that.comment_list = res.data.comment_list.reverse();
+        console.log(that.comment_list)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  },
 };
 </script>
 
@@ -370,8 +352,9 @@ li {
   max-width: 100%;
   vertical-align: middle;
   border-style: none;
-  width: 100px;
-  height: 100px;
+  width: 50px;
+  height: 50px;
+  margin-right: 20px;
 }
 
 /* .media .media-body {
