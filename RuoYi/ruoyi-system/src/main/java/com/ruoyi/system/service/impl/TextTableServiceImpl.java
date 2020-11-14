@@ -3,12 +3,10 @@ package com.ruoyi.system.service.impl;
 import java.util.Date;
 import java.util.List;
 
-import com.ruoyi.system.domain.UserinfoTable;
-import com.ruoyi.system.mapper.UserinfoTableMapper;
+import com.ruoyi.system.domain.*;
+import com.ruoyi.system.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.mapper.TextTableMapper;
-import com.ruoyi.system.domain.TextTable;
 import com.ruoyi.system.service.ITextTableService;
 import com.ruoyi.common.core.text.Convert;
 
@@ -25,6 +23,12 @@ public class TextTableServiceImpl implements ITextTableService
     private TextTableMapper textTableMapper;
     @Autowired
     private UserinfoTableMapper userinfoTableMapper;
+    @Autowired
+    private CollectTableMapper collectTableMapper;
+    @Autowired
+    private FavorTableMapper favorTableMapper;
+    @Autowired
+    private CommentTableMapper commentTableMapper;
 
     /**
      * 查询文章管理
@@ -88,9 +92,12 @@ public class TextTableServiceImpl implements ITextTableService
     @Override
     public int deleteTextTableByIds(String ids)
     {
+        updata_info(Long.parseLong(ids));
         UserinfoTable userinfoTable = userinfoTableMapper.selectUserinfoTableById(Long.parseLong(ids));
-        userinfoTable.setTextCount(userinfoTable.getTextCount()-1);
-        userinfoTableMapper.updateUserinfoTable(userinfoTable);
+        if(userinfoTable!=null) {
+            userinfoTable.setTextCount(userinfoTable.getTextCount() - 1);
+            userinfoTableMapper.updateUserinfoTable(userinfoTable);
+        }
         return textTableMapper.deleteTextTableByIds(Convert.toStrArray(ids));
     }
 
@@ -103,9 +110,12 @@ public class TextTableServiceImpl implements ITextTableService
     @Override
     public int deleteTextTableById(Long textid)
     {
+        updata_info(textid);
         UserinfoTable userinfoTable = userinfoTableMapper.selectUserinfoTableById(textid);
-        userinfoTable.setTextCount(userinfoTable.getTextCount()-1);
-        userinfoTableMapper.updateUserinfoTable(userinfoTable);
+        if(userinfoTable!=null) {
+            userinfoTable.setTextCount(userinfoTable.getTextCount() - 1);
+            userinfoTableMapper.updateUserinfoTable(userinfoTable);
+        }
         return textTableMapper.deleteTextTableById(textid);
     }
     /**
@@ -116,5 +126,43 @@ public class TextTableServiceImpl implements ITextTableService
      */
     public List<TextTable> selectTextTableByUserId(Long userid){
         return textTableMapper.selectTextTableByUserId(userid);
+    }
+    /*
+     * 删除文章前删除 点赞和收藏信息
+     */
+    public void updata_info(Long textid){
+        //通过文章id删除文章的收藏信息
+        delect_collectByTextid(textid);
+        //通过文章id删除文章的点赞信息
+        delect_favorByTextid(textid);
+        //通过文章id删除对应文章的评论信息
+        delect_commentByTextid(textid);
+    }
+    /*
+     * 通过文章id删除收藏
+     * */
+    public void delect_collectByTextid(Long textid) {
+        CollectTable collectTable = new CollectTable();
+        List<CollectTable> collectTables= collectTableMapper.selectCollectTableList(collectTable);
+        for (int i=0;i<collectTables.size();++i)
+            if(textid==collectTables.get(i).getTextid())
+                collectTableMapper.deleteCollectTableById(collectTables.get(i).getCollid());
+    }
+    /*
+     * 通过文章id删除点赞
+     * */
+    public void delect_favorByTextid(Long textid){
+        List<FavorTable> favorTables= favorTableMapper.selectFavorTableByTextId(textid);
+        System.out.println("---------------------->"+favorTables.size());
+        for (int i=0;i<favorTables.size();++i)
+            favorTableMapper.deleteFavorTableById(favorTables.get(i).getFavorid());
+    }
+    /*
+     * 通过文章id删除评论
+     * */
+    public void delect_commentByTextid(Long textid){
+        List<CommentTable> commentTables= commentTableMapper.selectCommentTableByTextId(textid);
+        for (int i=0;i<commentTables.size();++i)
+            commentTableMapper.deleteCommentTableById(commentTables.get(i).getCommentid());
     }
 }

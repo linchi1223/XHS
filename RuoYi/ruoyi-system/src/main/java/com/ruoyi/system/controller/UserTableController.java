@@ -51,6 +51,8 @@ public class UserTableController extends BaseController
     private IFansTableService fansTableService;
     @Autowired
     private IClassifyTableService classifyTableService;
+    @Autowired
+    private ICollectTableService collectTableService;
     @RequiresPermissions("system:commen_control:view")
     @GetMapping()
     public String commen_control()
@@ -147,32 +149,8 @@ public class UserTableController extends BaseController
     @Log(title = "普通用户管理", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
-    public AjaxResult remove(String ids,TextTable textTable)
+    public AjaxResult remove(String ids)
     {
-        //删除用户时不删除点赞数,点赞列表依旧保留
-        //优先删除用户的点赞
-        List<FavorTable> favorTables = favorTableService.selectFavorTableByUserid(Long.parseLong(ids));
-        for(int i = 0;i<favorTables.size();++i)
-            favorTableService.deleteFavorTableById(favorTables.get(i).getFavorid());
-
-       // 删除用户的文章
-        List<TextTable> textTable1 = textTableService.selectTextTableList(textTable);
-        for(int i = 0;i<textTable1.size();++i)
-            if(textTable1.get(i).getUserid()==Long.parseLong(ids))
-                textTableService.deleteTextTableById(textTable1.get(i).getTextid());
-
-        //通过用户id 删除用户的评论
-        List<CommentTable>  commentTables= commentTableService.selectCommentTableByUserId(Long.parseLong(ids));
-        for(int i = 0;i<commentTables.size();++i)
-            commentTableService.deleteCommentTableById(commentTables.get(i).getCommentid());
-
-        //删除用户时自动取关所有关注的人
-        //通过用户id 删除用户的评论
-        List<FansTable> fansTables = fansTableService.selectFansTableByUserid(Long.parseLong(ids));
-        for(int i = 0;i<fansTables.size();++i)
-            fansTableService.deleteFansTableById(fansTables.get(i).getFansid());
-        //删除用户的粉丝数，关注数，文章数信息
-        userinfoTableService.deleteUserinfoTableById(Long.parseLong(ids));
         return toAjax(userTableService.deleteUserTableByIds(ids));
     }
 

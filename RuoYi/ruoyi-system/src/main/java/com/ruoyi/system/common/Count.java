@@ -5,6 +5,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.json.JSONObject;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.*;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -39,37 +40,8 @@ public class Count extends BaseController {
     private IFavorTableService favorTableService;
     @Autowired
     private ITextTableService textTableService;
-
-    /*
-     * 数量更新
-     * */
-    /*
-     * 数量变动
-     * */
-    public Boolean updata_info_favor(Long userid, Boolean flag) {
-        UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(userid);
-        //用户信息返回空
-        if (userinfoTable == null)
-            return false;
-        if (flag) userinfoTable.setFavor(userinfoTable.getFavor() + 1);
-        else userinfoTable.setFavor(userinfoTable.getFavor() - 1);
-        userinfoTableService.updateUserinfoTable(userinfoTable);
-        return true;
-    }
-
-    /*
-     * 数量变动
-     * */
-    public Boolean updata_info_fans(Long userid, Boolean flag) {
-        UserinfoTable userinfoTable = userinfoTableService.selectUserinfoTableById(userid);
-        if (userinfoTable == null)
-            return true;
-        if (flag) userinfoTable.setFans(userinfoTable.getFans() + 1);
-        else userinfoTable.setFans(userinfoTable.getFans() - 1);
-        userinfoTableService.updateUserinfoTable(userinfoTable);
-        return true;
-    }
-
+    @Autowired
+    private ICollectTableService collectTableService;
     /*
      * userid1关注用户
      * userid2被关注用户
@@ -77,13 +49,22 @@ public class Count extends BaseController {
      */
     @GetMapping("/updata_info")
     @ResponseBody
-    public Boolean updata_info(FansTable fansTable, boolean flag) {
+    public JSONObject updata_info(FansTable fansTable, boolean flag) {
+        JSONObject jsonObject = new JSONObject();
+        FansTable fansTable1 = fansTableService.selectFansTableByUserid1AndUserid2(fansTable);
         //flag为true 表示为关注
-        if (flag)
+        if (flag&&fansTable1==null){
+            jsonObject.put("result","success");
             fansTableService.insertFansTable(fansTable);
-        else
+        }
+
+        else if(!flag&&fansTable1!=null){
+            jsonObject.put("result","success");
             fansTableService.deleteFansTableById(fansTableService.selectFansTableByUserid1AndUserid2(fansTable).getFansid());
-        return true;
+        }
+        else
+            jsonObject.put("result","fail");
+        return jsonObject;
     }
 
     /*
@@ -139,27 +120,50 @@ public class Count extends BaseController {
     @GetMapping("/up_text")
     @ResponseBody
     public JSONObject up_text(TextTable textTable) {
+        String str = textTable.getPicture();
+        textTable.setPicture(str.substring(0,str.length()-1));
+        textTable.setFavor(new Long(0));
         JSONObject jsonObject = new JSONObject();
         textTable.setUptime(new Date());
         int flag = textTableService.insertTextTable(textTable);
-        if (flag == 0)
-            jsonObject.put("result", "false");
-        else jsonObject.put("result", "true");
+        if (flag == 1)
+            jsonObject.put("result", "success");
+        else jsonObject.put("result", "fail");
         return jsonObject;
     }
-
-    @RequestMapping(value = "/up", method = RequestMethod.GET)
+    /*
+    * 传入的值为用户收藏的表 用到userid和textid
+    * 用户收藏文章
+    * */
+    @GetMapping("/updata_collect")
     @ResponseBody
-    public Response page(MultipartFile uploadFile, HttpServletRequest request, HttpServletResponse response) {
-        System.out.println(uploadFile);
-        String contentType = request.getContentType();//通过request获取请求类型
-        System.out.println(contentType);
-        if (contentType != null && contentType.toLowerCase().startsWith("multipart/")) {//如果请求类型为multipart，获取里面的文件信息
-            MultipartHttpServletRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
-
-            return null;
-            //            return multipartRequest.getFile(file);   //返回前端传递的文件信息
-        } else
-            return null;
+    public JSONObject collect_text(CollectTable collectTable, Boolean flag){
+        JSONObject jsonObject = new JSONObject();
+        CollectTable collectTable1 = collectTableService.selectCollectTableByUseridAndTextid(collectTable);
+        if(flag&&collectTable1==null) {
+            collectTableService.insertCollectTable(collectTable);
+            jsonObject.put("result", "success");
+        }
+        else if(!flag&&collectTable1!=null){
+            //删除收藏信息
+            collectTableService.deleteCollectTableById(collectTable1.getCollid());
+            jsonObject.put("result","success");
+        }
+        else jsonObject.put("result","fail");
+        return jsonObject;
+    }
+    /*
+    *
+    * 查询用户是否收藏对应文章
+    * */
+    @GetMapping("/quere_collect")
+    @ResponseBody
+    public JSONObject quere_collect(CollectTable collectTable){
+        JSONObject jsonObject = new JSONObject();
+        CollectTable collectTable1 = collectTableService.selectCollectTableByUseridAndTextid(collectTable);
+        if (collectTable1==null)
+            jsonObject.put("result","false");
+        else jsonObject.put("result","true");
+        return jsonObject;
     }
 }

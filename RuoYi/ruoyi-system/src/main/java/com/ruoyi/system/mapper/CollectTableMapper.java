@@ -58,4 +58,11 @@ public interface CollectTableMapper
      * @return 结果
      */
     public int deleteCollectTableByIds(String[] collids);
+
+    /*
+    *
+    * 通过用户id和文章id查询
+    *
+    * */
+    public CollectTable selectCollectTableByUseridAndTextid(CollectTable collectTable);
 }

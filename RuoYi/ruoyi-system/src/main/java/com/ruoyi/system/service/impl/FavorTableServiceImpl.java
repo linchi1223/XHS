@@ -134,6 +134,8 @@ public class FavorTableServiceImpl implements IFavorTableService
     //文章的点赞数更新
     public void favor_updata(FavorTable favorTable,boolean flag){
        TextTable textTable = textTableMapper.selectTextTableById(favorTable.getTextid());
+       if(textTable==null)
+           return;
        if(flag)
             textTable.setFavor(textTable.getFavor()+1);
         else textTable.setFavor(textTable.getFavor()-1);

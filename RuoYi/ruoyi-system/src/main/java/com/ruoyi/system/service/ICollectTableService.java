@@ -58,4 +58,11 @@ public interface ICollectTableService
      * @return 结果
      */
     public int deleteCollectTableById(Long collid);
+
+    /*
+     *
+     * 通过用户id和文章id查询
+     *
+     * */
+    public CollectTable selectCollectTableByUseridAndTextid(CollectTable collectTable);
 }
