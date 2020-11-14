@@ -20,11 +20,18 @@
       </div>
       <hr />
       <div class="items">
-        <div class="media">
-          <a href="#"><img src="../assets/logo.png" alt="comment" /></a>
+        <div
+          class="media"
+          v-for="(item, index) in text_list"
+          :key="index"
+          data-csid="csid"
+        >
+          <a href="#"><img :src="item.pictures[0]" alt="comment" /></a>
           <div class="media-body">
-            <h5><a href="#">John F. Medina</a></h5>
-            <span class="date">25 July 2020</span>
+            <h5>
+              <a href="#">{{ item.textname }}</a>
+            </h5>
+            <span class="date">{{ item.uptime }}</span>
             <button
               type="button"
               class="close"
@@ -34,11 +41,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
             <p>
-              But I must explain to you how all this mistaken idea of denouncing
-              pleasure and praising pawas born and I will give you a complete
-              account
-              测试,测试,测试测试测试测试,测试测试测试,测试,测试测试测试,测试,测试测试测
-              试测试,,测试,,测试测试
+              {{ item.textcontent }}
             </p>
           </div>
         </div>
@@ -48,13 +51,13 @@
       <div class="W_person_info">
         <div class="cover">
           <div class="headpic">
-            <a bpfilter="page_frame" href="" title="薛定的小谔猫"
+            <a bpfilter="page_frame" href="" :title="username"
               ><img
                 class="W_face_radius"
                 :src="userimg"
                 width="60"
                 height="60"
-                alt="薛定的小谔猫"
+                :alt="username"
             /></a>
           </div>
         </div>
@@ -64,27 +67,27 @@
               bpfilter="page_frame"
               href=""
               class="name S_txt1"
-              title="薛定的小谔猫"
-              >薛定的小谔猫</a
+              :title="username"
+              >{{username}}</a
             >
           </div>
           <ul class="user_atten clearfix W_f18">
             <li class="S_line1">
               <a bpfilter="page_frame" href="follow" class="S_txt1"
-                ><strong node-type="follow">78</strong
+                ><strong node-type="follow">{{userinfoTable.favor}}</strong
                 ><span class="S_txt2">关注</span></a
               >
             </li>
             <li class="S_line1">
               <a bpfilter="page_frame" href="fans" class="S_txt1"
-                ><strong node-type="fans">86</strong
+                ><strong node-type="fans">{{userinfoTable.fans}}</strong
                 ><span class="S_txt2">粉丝</span></a
               >
             </li>
             <li class="S_line1">
               <a bpfilter="page_frame" href="profile" class="S_txt1"
-                ><strong node-type="weibo">47</strong
-                ><span class="S_txt2">微博</span></a
+                ><strong node-type="weibo">{{userinfoTable.textCount}}</strong
+                ><span class="S_txt2">文章</span></a
               >
             </li>
           </ul>
@@ -101,11 +104,17 @@
 export default {
   data() {
     return {
+      // urladdress: "http://192.168.94.138:8080",
+      // urladdress: "http://192.168.31.121:8080",
+      urladdress: "http://192.168.46.124:8080",
       followed: false,
       textarea: "",
       userid: "",
       username: "",
       userimg: "",
+      text_list: [],
+      pictures: [],
+      userinfoTable:[]
     };
   },
   methods: {
@@ -119,6 +128,7 @@ export default {
     },
   },
   mounted() {
+    var that = this;
     this.userid = window.sessionStorage.getItem("userid");
     this.username = window.sessionStorage.getItem("username");
     this.userimg = window.sessionStorage.getItem("userimg");
@@ -131,6 +141,20 @@ export default {
       })
       .then(function (res) {
         console.log(res)
+        that.userinfoTable = res.data.userinfoTable
+        var textlist = res.data.text_list;
+        var a = [];
+        for (var i = 0; i < textlist.length; i++) {
+          var pictures = textlist[i].picture.split(",");
+          var b = [];
+          for (var j = 0; j < pictures.length; j++) {
+            pictures[j] = that.urladdress + pictures[j];
+            b.push(pictures[j]);
+          }
+          textlist[i].pictures = b;
+        }
+        that.text_list = textlist;
+        // console.log(that.text_list);
       })
       .catch(function (error) {
         console.log(error);

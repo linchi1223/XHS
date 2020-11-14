@@ -21,25 +21,6 @@
     box-shadow: 2px 2px 10px #fff;
     background: rgba(250, 250, 250, 0.8);
   }
-  // button {
-  //   background-color: #ff0;
-  //   color: #24292e;
-  //   border: 1px solid rgba(27, 31, 35, 0.2);
-  //   border-radius: 0.25em;
-  //   width: 100px;
-  //   line-height: 26px;
-  //   font-size: 13px;
-  //   margin: 4px 0;
-  //   margin-right: 4px;
-  //   cursor: pointer;
-  //   outline: none;
-  //   &.blue-light {
-  //     background: #27fbc2;
-  //   }
-  // }
-  // button:hover {
-  //   background-image: linear-gradient(-180deg, #fafbfc, #ccc 90%);
-  // }
 
   .cell-item {
     // transition: background 0.3s linear;
@@ -256,13 +237,6 @@
                 >
                 </el-avatar>
               </div>
-              <!-- <div
-                v-if="item.user_picture"
-                class="avatar"
-                :style="{
-                  backgroundImage: `url(${urladdress + item.user_picture})`,
-                }"
-              ></div> -->
               <div class="name">{{ item.user_name }}</div>
               <div class="like" :class="item.favor ? 'active' : ''">
                 <i></i>
@@ -290,9 +264,9 @@
 */
 // import Vue from 'vue'
 import loading from "./loading";
-
 import json from "./data.json";
 // import  routerLink  from 'vue-router'
+
 export default {
   props: {
     title: String,
@@ -313,8 +287,8 @@ export default {
       originData: {},
 
       // urladdress: "http://192.168.94.138:8080",
-      urladdress: "http://192.168.31.121:8080",
-      // urladdress: "http://192.168.46.124:8080",
+      // urladdress: "http://192.168.31.121:8080",
+      urladdress: "http://192.168.46.124:8080",
       // originData: json,
     };
   },
@@ -327,9 +301,6 @@ export default {
     },
   },
   methods: {
-    reset() {
-      this.data = [];
-    },
     //登入
     login() {
       // this.$router.push("/lod");
@@ -340,33 +311,26 @@ export default {
       // this.$router.push("/lod");
       this.$router.push({ name: "Register", params: {} });
     },
-    // 页面跳转
+    // 文章详情
     comments(id) {
-      console.log(id);
+    
       this.$router.push({ name: "Comment", params: { textId: id } });
     },
+    // 用户
     user() {
       this.$router.push({ name: "User", params: {} });
     },
-
-    // switchCol(col) {
-    //   this.col = col;
-    //   // console.log(this.col)
-    // },
+    // 获取瀑布流
     getGitHub() {
       fetch("https://api.github.com/repos/AwesomeDevin/vue-waterfall2").then(
         (data) => {
           data.json().then((res) => {
-            // console.log(res)
             this.gitHubData = res;
           });
         }
       );
     },
-    scroll(data) {
-      // console.log(data)
-    },
-
+    // 加载更多
     loadmore(num) {
       this.loading = true;
       setTimeout(() => {
@@ -377,20 +341,28 @@ export default {
   },
   mounted() {
     var self = this;
-    // this.data = this.originData;
+    // 调用瀑布流函数
     this.getGitHub();
-
+    // 获取文章列表
+    // /api/system/commen_control/login/getTextList
+    // 传参: 无
+    // 返回: 每个文章的图片(判断是否空)
+    // 非空“ip加地址”
+    //  空"https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png"
     axios
       .get("/api/system/commen_control/login/getTextList", {
-        // 还可以直接把参数拼接在url后边
         params: {},
       })
       .then(function (res) {
-        console.log("登入");
         for (var i = 0; i < res.data.rows.length; i++) {
-          res.data.rows[i].user_picture =
-            self.urladdress + res.data.rows[i].user_picture;
-
+          if (res.data.rows[i].user_picture == "") {
+            res.data.rows[i].user_picture =
+              "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png";
+            console.log(res.data.rows[i].user_picture);
+          } else {
+            res.data.rows[i].user_picture =
+              self.urladdress + res.data.rows[i].user_picture;
+          }
           var pictures = res.data.rows[i].picture.split(",");
           for (var j = 0; j < pictures.length; j++) {
             pictures[j] = self.urladdress + pictures[j];
@@ -398,45 +370,35 @@ export default {
           res.data.rows[i].pictures = pictures;
         }
         self.data = res.data.rows;
-        console.log(self.data);
       })
       .catch(function (error) {
         console.log(error);
       });
+      // 将userid保存
+      // 判断userid改变is_login
     var userid = window.sessionStorage.getItem("userid");
     if (userid == null) {
       this.is_login = false;
     } else {
       this.is_login = true;
+      // 获取用户信息
+      // 传参: 用户iduserid
+      //
       axios
         .get("/api/system/commen_control/login/getUserInfo", {
-          // 还可以直接把参数拼接在url后边
           params: { userid: userid },
         })
         .then(function (ress) {
-          console.log(ress);
           self.username = ress.data.username;
-          if (
-            ress.data.picture !=
-            "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png"
-          ) {
-            self.squareUrl = self.urladdress + ress.data.picture;
+          if (ress.data.picture == "") {
+            self.squareUrl =
+              "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png";
           } else {
-            self.squareUrl = ress.data.picture;
+            self.squareUrl = self.urladdress + ress.data.picture;
           }
+          // 保存用户名称和用户图片
           window.sessionStorage.setItem("username", self.username);
           window.sessionStorage.setItem("userimg", self.squareUrl);
-          for (var i = 0; i < ress.data.rows.length; i++) {
-            ress.data.rows[i].user_picture =
-              self.urladdress + ress.data.rows[i].user_picture;
-            var pictures = ress.data.rows[i].picture.split(",");
-            for (var j = 0; j < pictures.length; j++) {
-              pictures[j] = self.urladdress + pictures[j];
-            }
-            ress.data.rows[i].pictures = pictures;
-          }
-          self.data = ress.data.rows;
-          console.log(self.data);
         })
         .catch(function (error) {
           console.log(error);

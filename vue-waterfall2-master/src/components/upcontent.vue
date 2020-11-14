@@ -6,15 +6,15 @@
       </ol>
     </nav>
     <el-upload
-      :action="urladdress+'/common/upload1'"
+      :action="urladdress + '/common/upload'"
       list-type="picture-card"
       :on-success="handleUpSuccess"
       :on-error="handleUpError"
       :on-change="handleUpUpload"
       :on-preview="handleUpPreview"
       :on-remove="handleUpRemove"
-      :file-list="fileList" >
-
+      :file-list="fileList"
+    >
       <i slot="default" class="el-icon-plus"></i>
       <div slot="file" slot-scope="{ file }">
         <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
@@ -47,9 +47,16 @@
     </el-dialog>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page">文章</li>
+        <li class="breadcrumb-item active" aria-current="page">文章标题</li>
       </ol>
     </nav>
+    <el-input placeholder="请输入标题" v-model="input1" clearable> </el-input>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">文章内容</li>
+      </ol>
+    </nav>
+
     <el-input
       type="textarea"
       :autosize="{ minRows: 15, maxRows: 20 }"
@@ -57,6 +64,16 @@
       v-model="textarea1"
     >
     </el-input>
+
+    <el-select v-model="value" placeholder="请选择" style="margin-top: 10px">
+      <el-option
+        v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+      >
+      </el-option>
+    </el-select>
     <el-button class="buttongo" @click="fabuwenzhang()">发布</el-button>
   </div>
 </template>
@@ -82,13 +99,13 @@ export default {
       dialogVisible: false,
       disabled: false,
       textarea1: "",
-      // urladdress: "http://192.168.46.124:8080",
-      urladdress: "http://192.168.31.121:8080",
+      input1: "",
+      urladdress: "http://192.168.46.124:8080",
+      // urladdress: "http://192.168.31.121:8080",
       fileList: [],
-      reqUploadImgApi: "http://192.168.31.121:8080" + "/common/upload1",
-      form: {
-        photo: "",
-      },
+      imglist: "",
+      options: [],
+      value: "",
     };
   },
 
@@ -98,14 +115,14 @@ export default {
         Authorization: this.userid, // 直接从本地获取token就行
       };
     },
- 
+
     handleUpSuccess(response, file, fileList) {
-      console.log(response);
-      if (response.code == 200) {
-        this.ruleForm.cardUpImg = response.data[0];
-        this.imagesUp = response.data;
-        this.hideUp = fileList.length == 1;
-        this.$message.success(response.msg);
+      if (response.code == 0) {
+        var str = "";
+        for (var i = 0; i < fileList.length; i++) {
+          str = str + fileList[i].response.url + ",";
+          this.imglist = str;
+        }
       }
     },
     handleUpError(err, file, fileList) {},
@@ -121,9 +138,60 @@ export default {
     },
     // 上传图片
     handleUpUpload(file, fileList) {
-      console.log(file);
+      // console.log(file);
       this.hideUp = true;
     },
+    // 发布文章
+    fabuwenzhang() {
+      var that = this;
+      var userid = window.sessionStorage.getItem("userid");
+      console.log(
+        userid,
+        this.imglist,
+        this.input1,
+        this.textarea1,
+        this.value
+      );
+      axios
+        .get("/api/common/up_text", {
+          // 还可以直接把参数拼接在url后边
+          params: {
+            userid: userid,
+            picture: this.imglist,
+            textname: this.input1,
+            textcontent: this.textarea1,
+            csid: this.value,
+          },
+        })
+        .then(function (res) {
+          console.log(res.data.result)
+          if(res.data.result== 'success'){
+              that.$message("发布成功");
+          }
+          if(res.data.result=='fail'){
+              that.$message("发布失败");
+          }
+        })
+        .catch(function (error) {});
+    },
+  },
+  mounted() {
+    var that = this;
+    axios
+      .get("/api/system/commen_control/login/getclassify", {
+        // 还可以直接把参数拼接在url后边
+        params: {},
+      })
+      .then(function (res) {
+        var len = Object.keys(res.data).length;
+        for (var i = 0; i < len; i++) {
+          var a = {};
+          a.value = $(res.data[i])[0];
+          a.label = $(res.data[i])[1];
+          that.options.push(a);
+        }
+      })
+      .catch(function (error) {});
   },
 };
 </script>

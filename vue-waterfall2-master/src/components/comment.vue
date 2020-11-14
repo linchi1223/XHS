@@ -15,7 +15,7 @@
         <div class="block" style="margin-bottom: 10px">
           <el-carousel height="750px">
             <el-carousel-item
-              v-for="(itempic,index) in pictures"
+              v-for="(itempic, index) in pictures"
               :key="index"
               style="
                 display: flex;
@@ -56,13 +56,19 @@
           </div>
         </div>
         <div class="comments">
-          <div class="media" v-for="(item1,index) in comment_list" :key="index">
+          <div
+            class="media"
+            v-for="(item1, index) in comment_list"
+            :key="index"
+          >
             <a href="#"><img v-bind:src="item1.cUser_p" alt="comment" /></a>
             <div class="media-body">
-              <h5><a href="#">{{item1.cUser_n}}</a></h5>
-              <span class="date">{{item1.time}}</span>
+              <h5>
+                <a href="#">{{ item1.cUser_n }}</a>
+              </h5>
+              <span class="date">{{ item1.time }}</span>
               <p>
-                {{item1.comment}}
+                {{ item1.comment }}
               </p>
             </div>
           </div>
@@ -130,8 +136,8 @@ export default {
   data() {
     return {
       // urladdress: "http://192.168.94.138:8080",
-      urladdress: "http://192.168.31.121:8080",
-      //  urladdress: "http://192.168.46.124:8080",
+      // urladdress: "http://192.168.31.121:8080",
+      urladdress: "http://192.168.46.124:8080",
       followed: false,
       textarea: "",
       textId: "",
@@ -163,8 +169,17 @@ export default {
           },
         })
         .then(function (res) {
-          console.log(res);
           that.comment_list = res.data.comment_list.reverse();
+          for (var i = 0; i < res.data.comment_list.length; i++) {
+            console.log(res.data.comment_list[i]);
+            if (res.data.comment_list[i].cUser_p == "") {
+              res.data.comment_list[i].cUser_p =
+                "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png";
+            } else {
+              res.data.comment_list[i].cUser_p =
+                that.urladdress + res.data.comment_list[i].cUser_p;
+            }
+          }
         })
         .catch(function (error) {
           console.log(error);
@@ -190,14 +205,13 @@ export default {
         },
       })
       .then(function (res) {
-        console.log(res);
-        var datas = res.data;
+        var data = res.data;
         var textinfo = res.data.textinfo;
+        // console.log(data, textinfo);
         var picturescount = [];
         that.textname = textinfo.textname;
         that.textcontent = textinfo.textcontent;
         var pictures = textinfo.picture.split(",");
-        console.log(pictures);
         for (var j = 0; j < pictures.length; j++) {
           pictures[j] = that.urladdress + pictures[j];
         }
@@ -207,9 +221,24 @@ export default {
         }, 300);
         that.user_info = res.data.user_info;
         that.textuser = res.data.username;
-        that.textuserimg = that.urladdress + res.data.picture;
+        if (res.data.picture == "") {
+          that.textuserimg =
+            "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png";
+        } else {
+          that.textuserimg = that.urladdress + res.data.picture;
+        }
+
         that.comment_list = res.data.comment_list.reverse();
-        console.log(that.comment_list)
+        for (var i = 0; i < res.data.comment_list.length; i++) {
+          console.log(res.data.comment_list[i]);
+          if (res.data.comment_list[i].cUser_p == "") {
+            res.data.comment_list[i].cUser_p =
+              "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png";
+          } else {
+            res.data.comment_list[i].cUser_p =
+              that.urladdress + res.data.comment_list[i].cUser_p;
+          }
+        }
       })
       .catch(function (error) {
         console.log(error);

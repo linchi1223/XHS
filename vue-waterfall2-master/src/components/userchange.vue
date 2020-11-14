@@ -3,12 +3,12 @@
     <el-tag type="info">头像</el-tag>
     <el-upload
       class="avatar-uploader"
-      action="localhost:8080"
+      :action="urladdress + '/common/upload'"
       :show-file-list="false"
       :on-success="handleAvatarSuccess"
       :before-upload="beforeAvatarUpload"
     >
-      <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+      <img v-if="userimg" :src="userimg" class="avatar" />
       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
     <el-tag type="info">用户名</el-tag>
@@ -23,7 +23,7 @@
     <el-input placeholder="手机号" v-model="phone" clearable
       >{{ phone }}
     </el-input>
-    <el-button>保存</el-button>
+    <el-button @click="baocun()">保存</el-button>
   </div>
 </template>
 
@@ -31,19 +31,21 @@
 export default {
   data() {
     return {
-      username: "123",
-      password: "123",
-      phone: "123",
+      password: "",
+      phone: "",
       userid: "",
       username: "",
       userimg: "",
-      imageUrl:
-        "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
+      userimgadd:"",
+      urladdress: "http://192.168.46.124:8080",
+      // urladdress: "http://192.168.31.121:8080",
     };
   },
   methods: {
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+      console.log(file.response.url)
+      this.userimg = URL.createObjectURL(file.raw);
+      this.userimgadd = file.response.url
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
@@ -57,12 +59,30 @@ export default {
       }
       return isJPG && isLt2M;
     },
+    baocun() {
+         var userid = window.sessionStorage.getItem("userid");
+      axios
+        .get("/api/system/commen_control/login/editUserInfo", {
+          // 还可以直接把参数拼接在url后边
+          params: {
+            userid: userid,
+            username: this.username,
+            picture: this.userimgadd,
+            phone: this.phone,
+            password: this.password,
+          },
+        })
+        .then(function (res) {
+          console.log(res)
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
   },
   mounted() {
     this.userid = window.sessionStorage.getItem("userid");
-    this.username = window.sessionStorage.getItem("username");
-    this.userimg = window.sessionStorage.getItem("userimg");
-    console.log(window.sessionStorage.getItem("userid"));
+    var that = this;
     axios
       .get("/api/system/commen_control/login/edituser", {
         // 还可以直接把参数拼接在url后边
@@ -71,7 +91,19 @@ export default {
         },
       })
       .then(function (res) {
-        console.log(res);
+        console.log(res.data.username);
+        that.username = res.data.username;
+        if (res.data.picture == "") {
+          that.userimg =
+            "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png";
+        } else {
+          console.log(res.data.picture)
+          that.userimg = that.urladdress + res.data.picture;
+        }
+
+        that.phone = res.data.phone;
+        that.password = res.data.password;
+        console.log(that.username, that.userimg, that.phone, that.password);
       })
       .catch(function (error) {
         console.log(error);
