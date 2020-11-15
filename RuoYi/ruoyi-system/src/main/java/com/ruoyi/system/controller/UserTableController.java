@@ -8,6 +8,7 @@ import com.ruoyi.common.json.JSONObject;
 import com.ruoyi.system.common.Count;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.*;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -61,7 +62,9 @@ public class UserTableController extends BaseController
     }
 
     /**
-     * 查询普通用户管理列表
+     * 查询普通
+     *
+     * +管理列表
      */
     @RequiresPermissions("system:commen_control:list")
     @PostMapping("/list")
@@ -233,7 +236,7 @@ public class UserTableController extends BaseController
 * */
     @GetMapping("/login/getTextInfo")
     @ResponseBody
-    public JSONObject Text_Info(Long textid){
+    public JSONObject Text_Info(Long textid,Long userid1){
         System.out.println(textid);
         TextTable textTable = textTableService.selectTextTableById(textid);
         UserTable userTable = userTableService.selectUserTableById(textTable.getUserid());
@@ -252,6 +255,29 @@ public class UserTableController extends BaseController
         }
         jsonObject.put("comment_list",commentTables);
 
+        /*
+        * 返回是否关注
+        * */
+        FansTable fansTable = new FansTable();
+        fansTable.setUserid1(userid1);
+        fansTable.setUserid2(textTable.getUserid());
+        jsonObject.put("followed",if_fans(fansTable));
+
+        /*
+        * 返回是否点赞
+        * */
+        FavorTable favorTable = new FavorTable();
+        favorTable.setUserid(userid1);
+        favorTable.setTextid(textid);
+        jsonObject.put("favored",if_favor(favorTable));
+
+        /*
+        * 返回是否收藏
+        * */
+        CollectTable collectTable = new CollectTable();
+        collectTable.setUserid(userid1);
+        collectTable.setTextid(textid);
+        jsonObject.put("collected",quere_collect(collectTable));
 //        boolean flag = fansTableService.selectFansTableById();
         return jsonObject;
     }
@@ -306,19 +332,6 @@ public class UserTableController extends BaseController
     }
 
     /*
-     * 用户上传文章
-     * */
-    @GetMapping("/login/uptext")
-    @ResponseBody
-    public JSONObject uptext(TextTable textTable){
-        JSONObject jsonObject = new JSONObject();
-        int flag = textTableService.insertTextTable(textTable);
-        if(flag!=0)
-            jsonObject.put("result","success");
-        else jsonObject.put("result","fail");
-        return jsonObject;
-    }
-    /*
      * 用户上传前获取分类号
      * */
     @GetMapping("/login/getclassify")
@@ -333,6 +346,31 @@ public class UserTableController extends BaseController
             jsonObject.put(""+i,list);
         }
         return jsonObject;
+    }
+    /*
+     * 查询用户是否关注对应用户
+     * */
+    public Boolean if_fans(FansTable fansTable) {
+        JSONObject jsonObject = new JSONObject();
+        FansTable fansTable1 = fansTableService.selectFansTableByUserid1AndUserid2(fansTable);
+        if (fansTable1 == null)
+            return false;
+        return true;
+    }
+    /*
+    * 查询用户是否点赞
+    * */
+    public Boolean if_favor(FavorTable favorTable) {
+        FavorTable favorTable1 = favorTableService.selectFavorTableByUseridAndTextid(favorTable);
+        if (favorTable1 == null)
+            return false;
+        return true;
+    }
+    public Boolean quere_collect(CollectTable collectTable){
+        CollectTable collectTable1 = collectTableService.selectCollectTableByUseridAndTextid(collectTable);
+        if (collectTable1==null)
+            return false;
+        return true;
     }
 }
 

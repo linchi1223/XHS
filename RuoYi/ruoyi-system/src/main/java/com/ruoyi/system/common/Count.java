@@ -1,26 +1,14 @@
 package com.ruoyi.system.common;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.json.JSONObject;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.*;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.util.WebUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Response;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("common")
@@ -47,26 +35,66 @@ public class Count extends BaseController {
      * userid2被关注用户
      * flag 关注取关标志
      */
-    @GetMapping("/updata_info")
+    @GetMapping("/updata_fans")
     @ResponseBody
-    public JSONObject updata_info(FansTable fansTable, boolean flag) {
+    public JSONObject updata_fans(FansTable fansTable, boolean flag) {
         JSONObject jsonObject = new JSONObject();
         FansTable fansTable1 = fansTableService.selectFansTableByUserid1AndUserid2(fansTable);
         //flag为true 表示为关注
         if (flag&&fansTable1==null){
-            jsonObject.put("result","success");
+            jsonObject.put("result","true");
             fansTableService.insertFansTable(fansTable);
         }
-
         else if(!flag&&fansTable1!=null){
-            jsonObject.put("result","success");
+            jsonObject.put("result","false");
             fansTableService.deleteFansTableById(fansTableService.selectFansTableByUserid1AndUserid2(fansTable).getFansid());
         }
         else
             jsonObject.put("result","fail");
         return jsonObject;
     }
-
+    /*
+     * 传入的值为用户收藏的表 用到userid和textid
+     * 用户收藏文章
+     * */
+    @GetMapping("/updata_collect")
+    @ResponseBody
+    public JSONObject collect_text(CollectTable collectTable, Boolean flag){
+        JSONObject jsonObject = new JSONObject();
+        CollectTable collectTable1 = collectTableService.selectCollectTableByUseridAndTextid(collectTable);
+        if(flag&&collectTable1==null) {
+            collectTableService.insertCollectTable(collectTable);
+            jsonObject.put("result", "true");
+        }
+        else if(!flag&&collectTable1!=null){
+            //删除收藏信息
+            collectTableService.deleteCollectTableById(collectTable1.getCollid());
+            jsonObject.put("result","false");
+        }
+        else jsonObject.put("result","fail");
+        return jsonObject;
+    }
+    /*
+    * 用户点赞文章
+    * */
+    @GetMapping("/updata_favor")
+    @ResponseBody
+    public JSONObject updata_favor(FavorTable favorTable, Boolean flag){
+        JSONObject jsonObject = new JSONObject();
+        FavorTable favorTable1 = favorTableService.selectFavorTableByUseridAndTextid(favorTable);
+        if(flag&&favorTable1==null) {
+            //用户点赞 并且数据库中不存在该用户点赞信息
+            favorTableService.insertFavorTable(favorTable);
+            jsonObject.put("result", "true");
+        }
+        else if(!flag&&favorTable1!=null){
+            //删除点赞信息
+           favorTableService.deleteFavorTableById(favorTable1.getFavorid());
+            jsonObject.put("result","false");
+        }
+        else jsonObject.put("result","fail");
+        return jsonObject;
+    }
     /*
      * @param commentable
      * 插入评论接口
@@ -116,7 +144,10 @@ public class Count extends BaseController {
         else jsonObject.put("result", "true");
         return jsonObject;
     }
-
+/*
+* 发布文章接口
+* */
+    @CrossOrigin
     @GetMapping("/up_text")
     @ResponseBody
     public JSONObject up_text(TextTable textTable) {
@@ -132,24 +163,16 @@ public class Count extends BaseController {
         return jsonObject;
     }
     /*
-    * 传入的值为用户收藏的表 用到userid和textid
-    * 用户收藏文章
+    * 用户删除文章
     * */
-    @GetMapping("/updata_collect")
+    @GetMapping("/delete_text")
     @ResponseBody
-    public JSONObject collect_text(CollectTable collectTable, Boolean flag){
+    public JSONObject delete_text(TextTable textTable) {
+        int flag = textTableService.deleteTextTableById(textTable.getTextid());
         JSONObject jsonObject = new JSONObject();
-        CollectTable collectTable1 = collectTableService.selectCollectTableByUseridAndTextid(collectTable);
-        if(flag&&collectTable1==null) {
-            collectTableService.insertCollectTable(collectTable);
+        if (flag == 1)
             jsonObject.put("result", "success");
-        }
-        else if(!flag&&collectTable1!=null){
-            //删除收藏信息
-            collectTableService.deleteCollectTableById(collectTable1.getCollid());
-            jsonObject.put("result","success");
-        }
-        else jsonObject.put("result","fail");
+        else jsonObject.put("result", "fail");
         return jsonObject;
     }
     /*
