@@ -148,11 +148,7 @@ public class TextTableController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
-        TextTable textTable = textTableService.selectTextTableById(Long.parseLong(ids));
-        List<CommentTable> commentTables = commentTableService.selectCommentTableByTextId(Long.parseLong(ids));
-        //删除对应文章的评论
-        for(int i = 0;i<commentTables.size();++i)
-            commentTableService.deleteCommentTableById(commentTables.get(i).getCommentid());
+        System.out.println(ids);
         return toAjax(textTableService.deleteTextTableByIds(ids));
     }
 }

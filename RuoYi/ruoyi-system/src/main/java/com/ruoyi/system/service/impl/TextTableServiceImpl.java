@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.system.service.ITextTableService;
 import com.ruoyi.common.core.text.Convert;
 
+import javax.xml.soap.Text;
+
 /**
  * 文章管理Service业务层处理
  * 
@@ -93,7 +95,8 @@ public class TextTableServiceImpl implements ITextTableService
     public int deleteTextTableByIds(String ids)
     {
         updata_info(Long.parseLong(ids));
-        UserinfoTable userinfoTable = userinfoTableMapper.selectUserinfoTableById(Long.parseLong(ids));
+        TextTable textTable = textTableMapper.selectTextTableById(Long.parseLong(ids));
+        UserinfoTable userinfoTable = userinfoTableMapper.selectUserinfoTableById(textTable.getUserid());
         if(userinfoTable!=null) {
             userinfoTable.setTextCount(userinfoTable.getTextCount() - 1);
             userinfoTableMapper.updateUserinfoTable(userinfoTable);
@@ -111,7 +114,8 @@ public class TextTableServiceImpl implements ITextTableService
     public int deleteTextTableById(Long textid)
     {
         updata_info(textid);
-        UserinfoTable userinfoTable = userinfoTableMapper.selectUserinfoTableById(textid);
+        TextTable textTable = textTableMapper.selectTextTableById(textid);
+        UserinfoTable userinfoTable = userinfoTableMapper.selectUserinfoTableById(textTable.getUserid());
         if(userinfoTable!=null) {
             userinfoTable.setTextCount(userinfoTable.getTextCount() - 1);
             userinfoTableMapper.updateUserinfoTable(userinfoTable);
@@ -153,7 +157,6 @@ public class TextTableServiceImpl implements ITextTableService
      * */
     public void delect_favorByTextid(Long textid){
         List<FavorTable> favorTables= favorTableMapper.selectFavorTableByTextId(textid);
-        System.out.println("---------------------->"+favorTables.size());
         for (int i=0;i<favorTables.size();++i)
             favorTableMapper.deleteFavorTableById(favorTables.get(i).getFavorid());
     }
