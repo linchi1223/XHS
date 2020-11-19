@@ -100,7 +100,7 @@ export default {
       disabled: false,
       textarea1: "",
       input1: "",
-      urladdress: "http://172.20.10.3:8080",
+      urladdress: "http://192.168.46.125:8080",
       // urladdress: "http://192.168.31.121:8080",
       fileList: [],
       imglist: "",
@@ -151,6 +151,12 @@ export default {
         .forEach((item) => arr.push(`<p>${item.trim()}</p>`));
       var textarea2 = arr.join("<br>");
       console.log(userid, this.imglist, this.input1, textarea2, this.value);
+      if( this.imglist == "undefined" ||
+        this.input1 == "undefined" ||
+        textarea2 == "undefined" ||
+        this.value == "undefined"){
+        that.$message("请完成表格");
+      }else{
       axios
         .get("/api/common/up_text", {
           // 还可以直接把参数拼接在url后边
@@ -166,13 +172,16 @@ export default {
           console.log(res.data.result);
           if (res.data.result == "success") {
             that.$message("发布成功");
+            setTimeout(function(){
+               that.$router.push({ name: "User", params: {} });
+            },1000)
           }
           if (res.data.result == "fail") {
             that.$message("发布失败");
           }
         })
         .catch(function (error) {});
-    },
+    }}
   },
   mounted() {
 

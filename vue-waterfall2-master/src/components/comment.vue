@@ -18,12 +18,19 @@
         >
           {{ textname }}
         </h1>
-        <div>
+        <div class="tubiao">
           <div @click="Ylike()" v-if="!like">
-            <i class="el-icon-star-off"></i>
+            <img src="/static/img/like1.svg" alt="" />
           </div>
           <div @click="Ylike()" v-else>
-            <i class="el-icon-star-on"></i>
+            <img src="/static/img/like2.svg" alt="" />
+          </div>
+
+          <div @click="Ycollect()" v-if="!collect">
+            <img src="/static/img/followimg1.svg" alt="" />
+          </div>
+          <div @click="Ycollect()" v-else>
+            <img src="/static/img/followimg2.svg" alt="" />
           </div>
         </div>
         <!-- <button class="btn btn-defult btnn">发布</button> -->
@@ -106,14 +113,6 @@
               style="width: 100%"
             >
             </el-avatar>
-            <!-- <a bpfilter="page_frame" href="" title="textuser"
-              ><img
-                class="W_face_radius"
-                :src="textuserimg"
-                width="60"
-                height="60"
-                alt="textuser"
-            /></a> -->
           </div>
         </div>
         <div class="WB_innerwrap">
@@ -170,7 +169,7 @@ export default {
     return {
       // urladdress: "http://192.168.94.138:8080",
       // urladdress: "http://192.168.31.121:8080",
-      urladdress: "http://172.20.10.3:8080",
+      urladdress: "http://192.168.46.125:8080",
       followed: "",
       textarea: "",
       // textId: "",
@@ -187,6 +186,7 @@ export default {
       userimg: "",
       userid: "",
       like: false,
+      collect:false,
     };
   },
   methods: {
@@ -239,6 +239,27 @@ export default {
           console.log(error);
         });
     },
+     Ycollect() {
+      console.log(1);
+      var that = this;
+      that.collect = !that.collect;
+      console.log(that.collect);
+      var textuserId = window.sessionStorage.getItem("textuserId");
+      axios
+        .get("/api/common/updata_collect", {
+          params: {
+            flag: that.collect,
+            userid: that.userid,
+            textid: window.sessionStorage.getItem("textId"),
+          },
+        })
+        .then(function (res) {
+          console.log(res);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
 
     // 发送评论
     fasong() {
@@ -253,6 +274,7 @@ export default {
           },
         })
         .then(function (res) {
+        
           that.comment_list = res.data.comment_list.reverse();
           for (var i = 0; i < res.data.comment_list.length; i++) {
             console.log(res.data.comment_list[i]);
@@ -301,6 +323,7 @@ export default {
         var data = res.data;
         var textinfo = res.data.textinfo;
         that.followed = res.data.followed;
+        that.collect = res.data.collected
         console.log(res.data.favored);
         that.like = res.data.favored;
         // console.log(data, textinfo);
@@ -585,5 +608,14 @@ a:active {
 }
 .media-body {
   margin-left: 10px;
+}
+
+.tubiao img {
+  width: 30px;
+  float: left;
+  display: inline-block;
+  margin-top:15px;
+  margin-right:10px ;
+  vertical-align: auto;
 }
 </style>

@@ -12,7 +12,7 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             '/api': {
-                target: 'http://172.20.10.3:8080', //后期可以改
+                target: 'http://192.168.46.125:8080', //后期可以改
                 // target: 'http://192.168.31.121:8080', //后期可以改
                 // target: 'http://192.168.94.138:8080',
 

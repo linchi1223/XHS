@@ -112,6 +112,8 @@
       </div>
       <button class="btn btn-warning userchange" @click="change()">
         用户修改
+      </button><button class="btn btn-danger userchange" style="margin-top:10px" @click="out()">
+        登出
       </button>
     </div>
   </div>
@@ -123,7 +125,7 @@ export default {
     return {
       // urladdress: "http://192.168.94.138:8080",
       // urladdress: "http://192.168.31.121:8080",
-      urladdress: "http://172.20.10.3:8080",
+      urladdress: "http://192.168.46.125:8080",
       followed: false,
       textarea: "",
       userid: "",
@@ -143,6 +145,10 @@ export default {
     change() {
       // this.$router.push("/lod");
       this.$router.push({ name: "Userchange", params: {} });
+    },
+    out(){
+      sessionStorage.clear();
+      this.$router.push({ name: "Index", params: {} });
     },
     handleClose(textid) {
       console.log(textid);
@@ -279,7 +285,7 @@ li {
   border-radius: 50%;
 }
 .W_person_info .WB_innerwrap {
-  padding: 30px 9px;
+  padding: 30px 9px 10px;
 }
 .S_txt1 {
   font-size: 18px;
@@ -421,7 +427,7 @@ a:active {
 .Cuserinfo {
   margin: 20px 0;
   width: 280px;
-  height: 280px;
+  height: 300px;
 
   float: right;
   border: 1px solid #ddd;
