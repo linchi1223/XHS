@@ -1,7 +1,22 @@
 <template>
   <div class="all">
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
     <div class="contents">
       <div class="head">
+         <a href="http://localhost:8080/#/index">
         <h1
           class="username"
           style="
@@ -14,8 +29,9 @@
             height: 80px;
           "
         >
-          {{ username }}
+          主页
         </h1>
+       </a>
         <button class="btn btn-defult btnn" @click="fabu()">发布</button>
       </div>
       <hr />
@@ -24,7 +40,7 @@
           class="media"
           v-for="(item, index) in text_list"
           :key="index"
-          data-csid="csid"
+          :data-textid="item.textid"
         >
           <a href="#"><img :src="item.pictures[0]" alt="comment" /></a>
           <div class="media-body">
@@ -37,12 +53,13 @@
               class="close"
               data-dismiss="modal"
               aria-label="Close"
+              @click="handleClose(item.textid)"
             >
               <span aria-hidden="true">&times;</span>
             </button>
-            <p>
-              {{ item.textcontent }}
-            </p>
+            <div v-html="item.textcontent">
+              <!-- {{ item.textcontent }} -->
+            </div>
           </div>
         </div>
       </div>
@@ -68,25 +85,25 @@
               href=""
               class="name S_txt1"
               :title="username"
-              >{{username}}</a
+              >{{ username }}</a
             >
           </div>
           <ul class="user_atten clearfix W_f18">
             <li class="S_line1">
               <a bpfilter="page_frame" href="follow" class="S_txt1"
-                ><strong node-type="follow">{{userinfoTable.favor}}</strong
+                ><strong node-type="follow">{{ userinfoTable.favor }}</strong
                 ><span class="S_txt2">关注</span></a
               >
             </li>
             <li class="S_line1">
               <a bpfilter="page_frame" href="fans" class="S_txt1"
-                ><strong node-type="fans">{{userinfoTable.fans}}</strong
+                ><strong node-type="fans">{{ userinfoTable.fans }}</strong
                 ><span class="S_txt2">粉丝</span></a
               >
             </li>
             <li class="S_line1">
               <a bpfilter="page_frame" href="profile" class="S_txt1"
-                ><strong node-type="weibo">{{userinfoTable.textCount}}</strong
+                ><strong node-type="weibo">{{ userinfoTable.textCount }}</strong
                 ><span class="S_txt2">文章</span></a
               >
             </li>
@@ -106,7 +123,7 @@ export default {
     return {
       // urladdress: "http://192.168.94.138:8080",
       // urladdress: "http://192.168.31.121:8080",
-      urladdress: "http://192.168.46.124:8080",
+      urladdress: "http://172.20.10.3:8080",
       followed: false,
       textarea: "",
       userid: "",
@@ -114,7 +131,8 @@ export default {
       userimg: "",
       text_list: [],
       pictures: [],
-      userinfoTable:[]
+      userinfoTable: [],
+      dialogVisible: false,
     };
   },
   methods: {
@@ -125,6 +143,57 @@ export default {
     change() {
       // this.$router.push("/lod");
       this.$router.push({ name: "Userchange", params: {} });
+    },
+    handleClose(textid) {
+      console.log(textid);
+      this.$confirm("确认关闭？")
+        .then(() => {
+          console.log(textid);
+          this.delect(textid);
+          done();
+        })
+        .catch(() => {});
+    },
+    delect(textid) {
+      var that= this;
+      axios
+        .get("/api/common/delete_text", {
+          // 还可以直接把参数拼接在url后边
+          params: {
+            textid: textid,
+          },
+        })
+        .then(function (res) {
+          axios
+            .get("/api/system/commen_control/login/getUserText", {
+              // 还可以直接把参数拼接在url后边
+              params: {
+                userid: that.userid,
+              },
+            })
+            .then(function (res) {
+             
+              that.userinfoTable = res.data.userinfoTable;
+              var textlist = res.data.text_list;
+              var a = [];
+              for (var i = 0; i < textlist.length; i++) {
+                var pictures = (textlist[i].picture || "").split(",");
+                var b = [];
+                for (var j = 0; j < pictures.length; j++) {
+                  pictures[j] = that.urladdress + pictures[j];
+                  b.push(pictures[j]);
+                }
+                textlist[i].pictures = b;
+              }
+              that.text_list = textlist;
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
   },
   mounted() {
@@ -140,12 +209,12 @@ export default {
         },
       })
       .then(function (res) {
-        console.log(res)
-        that.userinfoTable = res.data.userinfoTable
+        console.log(res);
+        that.userinfoTable = res.data.userinfoTable;
         var textlist = res.data.text_list;
         var a = [];
         for (var i = 0; i < textlist.length; i++) {
-          var pictures = textlist[i].picture.split(",");
+          var pictures = (textlist[i].picture || "").split(",");
           var b = [];
           for (var j = 0; j < pictures.length; j++) {
             pictures[j] = that.urladdress + pictures[j];
@@ -154,7 +223,6 @@ export default {
           textlist[i].pictures = b;
         }
         that.text_list = textlist;
-        // console.log(that.text_list);
       })
       .catch(function (error) {
         console.log(error);

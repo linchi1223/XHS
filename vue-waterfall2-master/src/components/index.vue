@@ -223,7 +223,7 @@
           class="cell-item"
           :key="index"
           v-for="(item, index) in data"
-          @click="comments(item.textid)"
+          @click="comments(item.textid, item.userid)"
         >
           <img v-if="item.pictures" :src="item.pictures[0]" alt="加载错误" />
           <div class="item-body">
@@ -285,11 +285,12 @@ export default {
       loading: false,
       gitHubData: {},
       originData: {},
-
+      nums: 1,
       // urladdress: "http://192.168.94.138:8080",
       // urladdress: "http://192.168.31.121:8080",
-      urladdress: "http://192.168.46.124:8080",
-      // originData: json,
+      urladdress: "http://172.20.10.3:8080",
+      originData: json,
+      testnum:-1
     };
   },
   computed: {
@@ -312,9 +313,13 @@ export default {
       this.$router.push({ name: "Register", params: {} });
     },
     // 文章详情
-    comments(id) {
-    
-      this.$router.push({ name: "Comment", params: { textId: id } });
+    comments(id, textuserid) {
+      console.log(textuserid);
+      this.$router.push({
+        name: "Comment",
+        params: { textId: id, textuserId: textuserid },
+        // params: { textId: id },
+      });
     },
     // 用户
     user() {
@@ -331,12 +336,48 @@ export default {
       );
     },
     // 加载更多
-    loadmore(num) {
-      this.loading = true;
-      setTimeout(() => {
-        this.data = this.data.concat(this.originData, this.originData);
-        this.loading = false;
-      }, 1000);
+    loadmore(nums) {
+ 
+      var that = this;
+      console.log(that.nums);
+      that.nums += 1;
+      console.log(that.nums);
+      axios
+        .get("/api/system/commen_control/login/getTextList", {
+          params: {
+            pageSize: 15,
+            pageNum: that.nums,
+          },
+        })
+        .then(function (res) {
+          if (res.data.rows.length < 15) {
+            that.testnum = that.testnum+1;
+            console.log("testnum"+that.testnum)
+          }
+          if (that.testnum <= 0) {
+            for (var i = 0; i < res.data.rows.length; i++) {
+              if (res.data.rows[i].user_picture == "") {
+                res.data.rows[i].user_picture =
+                  "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png";
+                console.log(res.data.rows[i].user_picture);
+              } else {
+                res.data.rows[i].user_picture =
+                  that.urladdress + res.data.rows[i].user_picture;
+              }
+              var pictures = (res.data.rows[i].picture || "").split(",");
+              for (var j = 0; j < pictures.length; j++) {
+                pictures[j] = that.urladdress + pictures[j];
+              }
+              res.data.rows[i].pictures = pictures;
+            }
+            // self.data = res.data.rows;
+            that.data = that.data.concat(res.data.rows);
+            console.log(res.data.rows);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
   },
   mounted() {
@@ -351,9 +392,13 @@ export default {
     //  空"https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png"
     axios
       .get("/api/system/commen_control/login/getTextList", {
-        params: {},
+        params: {
+          pageSize: 15,
+          pageNum: self.nums,
+        },
       })
       .then(function (res) {
+        console.log(res);
         for (var i = 0; i < res.data.rows.length; i++) {
           if (res.data.rows[i].user_picture == "") {
             res.data.rows[i].user_picture =
@@ -363,7 +408,8 @@ export default {
             res.data.rows[i].user_picture =
               self.urladdress + res.data.rows[i].user_picture;
           }
-          var pictures = res.data.rows[i].picture.split(",");
+
+          var pictures = (res.data.rows[i].picture || "").split(",");
           for (var j = 0; j < pictures.length; j++) {
             pictures[j] = self.urladdress + pictures[j];
           }
@@ -374,8 +420,8 @@ export default {
       .catch(function (error) {
         console.log(error);
       });
-      // 将userid保存
-      // 判断userid改变is_login
+    // 将userid保存
+    // 判断userid改变is_login
     var userid = window.sessionStorage.getItem("userid");
     if (userid == null) {
       this.is_login = false;

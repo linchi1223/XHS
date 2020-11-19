@@ -100,7 +100,7 @@ export default {
       disabled: false,
       textarea1: "",
       input1: "",
-      urladdress: "http://192.168.46.124:8080",
+      urladdress: "http://172.20.10.3:8080",
       // urladdress: "http://192.168.31.121:8080",
       fileList: [],
       imglist: "",
@@ -145,13 +145,12 @@ export default {
     fabuwenzhang() {
       var that = this;
       var userid = window.sessionStorage.getItem("userid");
-      console.log(
-        userid,
-        this.imglist,
-        this.input1,
-        this.textarea1,
-        this.value
-      );
+      var arr = [];
+      that.textarea1
+        .split("\n")
+        .forEach((item) => arr.push(`<p>${item.trim()}</p>`));
+      var textarea2 = arr.join("<br>");
+      console.log(userid, this.imglist, this.input1, textarea2, this.value);
       axios
         .get("/api/common/up_text", {
           // 还可以直接把参数拼接在url后边
@@ -159,23 +158,24 @@ export default {
             userid: userid,
             picture: this.imglist,
             textname: this.input1,
-            textcontent: this.textarea1,
+            textcontent: textarea2,
             csid: this.value,
           },
         })
         .then(function (res) {
-          console.log(res.data.result)
-          if(res.data.result== 'success'){
-              that.$message("发布成功");
+          console.log(res.data.result);
+          if (res.data.result == "success") {
+            that.$message("发布成功");
           }
-          if(res.data.result=='fail'){
-              that.$message("发布失败");
+          if (res.data.result == "fail") {
+            that.$message("发布失败");
           }
         })
         .catch(function (error) {});
     },
   },
   mounted() {
+
     var that = this;
     axios
       .get("/api/system/commen_control/login/getclassify", {

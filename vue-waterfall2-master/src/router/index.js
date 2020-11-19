@@ -10,6 +10,9 @@ import Comment from '@/components/comment'
 import Register from '@/components/register'
 import Upcontent from '@/components/upcontent'
 import Userchange from '@/components/userchange'
+import VueCropper from 'vue-cropper'
+
+Vue.use(VueCropper)
 
 Vue.use(Router)
 

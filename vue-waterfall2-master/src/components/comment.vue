@@ -4,10 +4,28 @@
       <div class="head">
         <h1
           class="username"
-          style="line-height: 60px; display: line-block; margin-left: 25px"
+          style="
+            line-height: 60px;
+            display: line-block;
+            margin-left: 25px;
+            width: 80%;
+            display: block;
+            float: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          "
         >
           {{ textname }}
         </h1>
+        <div>
+          <div @click="Ylike()" v-if="!like">
+            <i class="el-icon-star-off"></i>
+          </div>
+          <div @click="Ylike()" v-else>
+            <i class="el-icon-star-on"></i>
+          </div>
+        </div>
         <!-- <button class="btn btn-defult btnn">发布</button> -->
       </div>
       <hr />
@@ -61,7 +79,9 @@
             v-for="(item1, index) in comment_list"
             :key="index"
           >
-            <a href="#"><img v-bind:src="item1.cUser_p" alt="comment" /></a>
+            <el-avatar shape="circle" :size="50" :src="item1.cUser_p">
+            </el-avatar>
+            <!-- <a href="#" ><img v-bind:src="item1.cUser_p" alt="comment" /></a> -->
             <div class="media-body">
               <h5>
                 <a href="#">{{ item1.cUser_n }}</a>
@@ -79,14 +99,21 @@
       <div class="W_person_info">
         <div class="cover">
           <div class="headpic">
-            <a bpfilter="page_frame" href="" title="textuser"
+            <el-avatar
+              shape="circle"
+              :size="50"
+              :src="textuserimg"
+              style="width: 100%"
+            >
+            </el-avatar>
+            <!-- <a bpfilter="page_frame" href="" title="textuser"
               ><img
                 class="W_face_radius"
                 :src="textuserimg"
                 width="60"
                 height="60"
                 alt="textuser"
-            /></a>
+            /></a> -->
           </div>
         </div>
         <div class="WB_innerwrap">
@@ -121,12 +148,18 @@
           </ul>
         </div>
       </div>
-      <button class="btn btn-warning userchange" v-if="followed == true">
-        <h5>已关注</h5>
-      </button>
-      <button class="btn btn-danger userchange" v-if="followed == false">
-        <h5>关注</h5>
-      </button>
+      <div>
+        <button
+          class="btn btn-warning userchange"
+          @click="guanzhu()"
+          v-if="followed"
+        >
+          <h5>已关注</h5>
+        </button>
+        <button class="btn btn-danger userchange" @click="guanzhu()" v-else>
+          <h5>关注</h5>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -137,10 +170,10 @@ export default {
     return {
       // urladdress: "http://192.168.94.138:8080",
       // urladdress: "http://192.168.31.121:8080",
-      urladdress: "http://192.168.46.124:8080",
-      followed: false,
+      urladdress: "http://172.20.10.3:8080",
+      followed: "",
       textarea: "",
-      textId: "",
+      // textId: "",
       comment_list: [],
       picture: "",
       username: "",
@@ -153,9 +186,60 @@ export default {
       textuserimg: "",
       userimg: "",
       userid: "",
+      like: false,
     };
   },
   methods: {
+    guanzhu() {
+      var that = this;
+      that.followed = !that.followed;
+      console.log(that.followed);
+      var textuserId = window.sessionStorage.getItem("textuserId");
+      axios
+        .get("/api/common/updata_fans", {
+          params: {
+            flag: that.followed,
+            userid1: that.userid,
+            userid2: that.textuserId,
+          },
+        })
+        .then(function (res) {
+          // console.log(res.data.result == "true")
+          if (res.data.result == "true") {
+            console.log(that.user_info.favor);
+            that.user_info.favor += 1;
+          }
+          if (res.data.result == "false") {
+            console.log(that.user_info.favor);
+            that.user_info.favor -= 1;
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    Ylike() {
+      console.log(1);
+      var that = this;
+      that.like = !that.like;
+      console.log(that.like);
+      var textuserId = window.sessionStorage.getItem("textuserId");
+      axios
+        .get("/api/common/updata_favor", {
+          params: {
+            flag: that.like,
+            userid: that.userid,
+            textid: window.sessionStorage.getItem("textId"),
+          },
+        })
+        .then(function (res) {
+          console.log(res);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+
     // 发送评论
     fasong() {
       var that = this;
@@ -192,26 +276,38 @@ export default {
     that.userid = window.sessionStorage.getItem("userid");
     that.userimg = window.sessionStorage.getItem("userimg");
     var textId = this.$route.params.textId;
+    var textuserId = this.$route.params.textuserId;
+    this.textuserId = textuserId;
     if (textId == null) {
       textId = window.sessionStorage.getItem("textId");
+      textuserId = window.sessionStorage.getItem("textuserId");
+      this.textuserId = textuserId;
     }
     window.sessionStorage.setItem("textId", textId);
+    window.sessionStorage.setItem("textuserId", textuserId);
+
     // 获取信息
     axios
       .get("/api/system/commen_control/login/getTextInfo", {
         // 还可以直接把参数拼接在url后边
         params: {
           textid: textId,
+          userid1: that.userid,
+          userid2: textuserId,
         },
       })
       .then(function (res) {
+        console.log(res);
         var data = res.data;
         var textinfo = res.data.textinfo;
+        that.followed = res.data.followed;
+        console.log(res.data.favored);
+        that.like = res.data.favored;
         // console.log(data, textinfo);
         var picturescount = [];
         that.textname = textinfo.textname;
         that.textcontent = textinfo.textcontent;
-        var pictures = textinfo.picture.split(",");
+        var pictures = (textinfo.picture || "").split(",");
         for (var j = 0; j < pictures.length; j++) {
           pictures[j] = that.urladdress + pictures[j];
         }
@@ -248,6 +344,16 @@ export default {
 </script>
 
 <style scoped>
+i {
+  font-size: 25px;
+  line-height: 55px;
+}
+.el-icon-star-on {
+  font-size: 36px;
+}
+.el-icon-star-off {
+  font-size: 34px;
+}
 .wenzhang {
   font-size: 15px;
 }
@@ -476,5 +582,8 @@ a:active {
 
   float: right;
   border: 1px solid #ddd;
+}
+.media-body {
+  margin-left: 10px;
 }
 </style>

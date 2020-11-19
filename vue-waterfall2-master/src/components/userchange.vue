@@ -7,6 +7,7 @@
       :show-file-list="false"
       :on-success="handleAvatarSuccess"
       :before-upload="beforeAvatarUpload"
+      cut
     >
       <img v-if="userimg" :src="userimg" class="avatar" />
       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -36,16 +37,16 @@ export default {
       userid: "",
       username: "",
       userimg: "",
-      userimgadd:"",
-      urladdress: "http://192.168.46.124:8080",
+      userimgadd: "",
+      urladdress: "http://172.20.10.3:8080",
       // urladdress: "http://192.168.31.121:8080",
     };
   },
   methods: {
     handleAvatarSuccess(res, file) {
-      console.log(file.response.url)
+      console.log(file.response.url);
       this.userimg = URL.createObjectURL(file.raw);
-      this.userimgadd = file.response.url
+      this.userimgadd = file.response.url;
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
@@ -60,7 +61,8 @@ export default {
       return isJPG && isLt2M;
     },
     baocun() {
-         var userid = window.sessionStorage.getItem("userid");
+      var that = this;
+      var userid = window.sessionStorage.getItem("userid");
       axios
         .get("/api/system/commen_control/login/editUserInfo", {
           // 还可以直接把参数拼接在url后边
@@ -73,7 +75,13 @@ export default {
           },
         })
         .then(function (res) {
-          console.log(res)
+          if (res.data.result == "success") {
+            that.$message("保存成功");
+            window.sessionStorage.setItem("userimg", that.userimg);
+
+          } else {
+            that.$message("保存失败");
+          }
         })
         .catch(function (error) {
           console.log(error);
@@ -97,13 +105,12 @@ export default {
           that.userimg =
             "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png";
         } else {
-          console.log(res.data.picture)
+          console.log(res.data.picture);
           that.userimg = that.urladdress + res.data.picture;
         }
 
         that.phone = res.data.phone;
         that.password = res.data.password;
-        console.log(that.username, that.userimg, that.phone, that.password);
       })
       .catch(function (error) {
         console.log(error);

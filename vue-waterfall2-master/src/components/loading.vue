@@ -50,7 +50,7 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background-color: #1ABC9C;
+  background-color: pink;
   opacity: 0.6;
   position: absolute;
   top: 0;

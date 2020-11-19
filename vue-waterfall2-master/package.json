@@ -17,8 +17,10 @@
     "less": "^3.9.0",
     "less-loader": "^5.0.0",
     "vue": "^2.6.10",
+    "vue-cropper": "^0.5.5",
     "vue-router": "^3.0.1",
-    "vue-waterfall2": "^1.10.1"
+    "vue-waterfall2": "^1.10.1",
+    "wangeditor": "^4.3.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
