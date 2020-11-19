@@ -26,7 +26,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectCollectTableVo"/>
         where collid = #{collid}
     </select>
-        
+
+    <select id="selectCollectTableByUseridAndTextid" parameterType="Long" resultMap="CollectTableResult">
+        <include refid="selectCollectTableVo"/>
+        where textid = #{textid} AND userid=#{userid}
+    </select>
     <insert id="insertCollectTable" parameterType="CollectTable" useGeneratedKeys="true" keyProperty="collid">
         insert into collect_table
         <trim prefix="(" suffix=")" suffixOverrides=",">

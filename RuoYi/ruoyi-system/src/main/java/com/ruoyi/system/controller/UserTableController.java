@@ -1,5 +1,6 @@
 package com.ruoyi.system.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ruoyi.common.json.JSON;
@@ -7,6 +8,7 @@ import com.ruoyi.common.json.JSONObject;
 import com.ruoyi.system.common.Count;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.*;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -48,6 +50,10 @@ public class UserTableController extends BaseController
     private IFavorTableService favorTableService;
     @Autowired
     private IFansTableService fansTableService;
+    @Autowired
+    private IClassifyTableService classifyTableService;
+    @Autowired
+    private ICollectTableService collectTableService;
     @RequiresPermissions("system:commen_control:view")
     @GetMapping()
     public String commen_control()
@@ -56,7 +62,9 @@ public class UserTableController extends BaseController
     }
 
     /**
-     * 查询普通用户管理列表
+     * 查询普通
+     *
+     * +管理列表
      */
     @RequiresPermissions("system:commen_control:list")
     @PostMapping("/list")
@@ -144,33 +152,8 @@ public class UserTableController extends BaseController
     @Log(title = "普通用户管理", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
-    public AjaxResult remove(String ids,TextTable textTable)
+    public AjaxResult remove(String ids)
     {
-        //删除用户时不删除点赞数,点赞列表依旧保留
-        //优先删除用户的点赞
-        List<FavorTable> favorTables = favorTableService.selectFavorTableByUserid(Long.parseLong(ids));
-        for(int i = 0;i<favorTables.size();++i)
-            favorTableService.deleteFavorTableById(favorTables.get(i).getFavorid());
-
-       // 删除用户的文章
-        List<TextTable> textTable1 = textTableService.selectTextTableList(textTable);
-        for(int i = 0;i<textTable1.size();++i)
-            if(textTable1.get(i).getUserid()==Long.parseLong(ids))
-                textTableService.deleteTextTableById(textTable1.get(i).getTextid());
-
-        //通过用户id 删除用户的评论
-        List<CommentTable>  commentTables= commentTableService.selectCommentTableByUserId(Long.parseLong(ids));
-
-        for(int i = 0;i<commentTables.size();++i)
-            commentTableService.deleteCommentTableById(commentTables.get(i).getCommentid());
-
-        //删除用户时自动取关所有关注的人
-        //通过用户id 删除用户的评论
-        List<FansTable> fansTables = fansTableService.selectFansTableByUserid(Long.parseLong(ids));
-        for(int i = 0;i<fansTables.size();++i)
-            fansTableService.deleteFansTableById(fansTables.get(i).getFansid());
-        //删除用户的粉丝数，关注数，文章数信息
-        userinfoTableService.deleteUserinfoTableById(Long.parseLong(ids));
         return toAjax(userTableService.deleteUserTableByIds(ids));
     }
 
@@ -253,7 +236,7 @@ public class UserTableController extends BaseController
 * */
     @GetMapping("/login/getTextInfo")
     @ResponseBody
-    public JSONObject Text_Info(Long textid){
+    public JSONObject Text_Info(Long textid,Long userid1){
         System.out.println(textid);
         TextTable textTable = textTableService.selectTextTableById(textid);
         UserTable userTable = userTableService.selectUserTableById(textTable.getUserid());
@@ -272,6 +255,29 @@ public class UserTableController extends BaseController
         }
         jsonObject.put("comment_list",commentTables);
 
+        /*
+        * 返回是否关注
+        * */
+        FansTable fansTable = new FansTable();
+        fansTable.setUserid1(userid1);
+        fansTable.setUserid2(textTable.getUserid());
+        jsonObject.put("followed",if_fans(fansTable));
+
+        /*
+        * 返回是否点赞
+        * */
+        FavorTable favorTable = new FavorTable();
+        favorTable.setUserid(userid1);
+        favorTable.setTextid(textid);
+        jsonObject.put("favored",if_favor(favorTable));
+
+        /*
+        * 返回是否收藏
+        * */
+        CollectTable collectTable = new CollectTable();
+        collectTable.setUserid(userid1);
+        collectTable.setTextid(textid);
+        jsonObject.put("collected",quere_collect(collectTable));
 //        boolean flag = fansTableService.selectFansTableById();
         return jsonObject;
     }
@@ -300,6 +306,7 @@ public class UserTableController extends BaseController
         return jsonObject;
     }
     /*
+    * 用户信息界面 包含用户信息和用户发布的文章列表
     * 通过用户id用户信息，和文章列表
     * */
     @GetMapping("/login/getUserText")
@@ -322,6 +329,48 @@ public class UserTableController extends BaseController
     @ResponseBody
     public UserTable getUser(Long userid){
         return userTableService.selectUserTableById(userid);
+    }
+
+    /*
+     * 用户上传前获取分类号
+     * */
+    @GetMapping("/login/getclassify")
+    @ResponseBody
+    public JSONObject getclassify(ClassifyTable classifyTable){
+        JSONObject jsonObject = new JSONObject();
+        List<ClassifyTable> classifyTables = classifyTableService.selectClassifyTableList(classifyTable);
+        for(int i=0;i<classifyTables.size();++i){
+            ArrayList<String> list = new ArrayList<>();
+            list.add(classifyTables.get(i).getCsid().toString());
+            list.add(classifyTables.get(i).getCname());
+            jsonObject.put(""+i,list);
+        }
+        return jsonObject;
+    }
+    /*
+     * 查询用户是否关注对应用户
+     * */
+    public Boolean if_fans(FansTable fansTable) {
+        JSONObject jsonObject = new JSONObject();
+        FansTable fansTable1 = fansTableService.selectFansTableByUserid1AndUserid2(fansTable);
+        if (fansTable1 == null)
+            return false;
+        return true;
+    }
+    /*
+    * 查询用户是否点赞
+    * */
+    public Boolean if_favor(FavorTable favorTable) {
+        FavorTable favorTable1 = favorTableService.selectFavorTableByUseridAndTextid(favorTable);
+        if (favorTable1 == null)
+            return false;
+        return true;
+    }
+    public Boolean quere_collect(CollectTable collectTable){
+        CollectTable collectTable1 = collectTableService.selectCollectTableByUseridAndTextid(collectTable);
+        if (collectTable1==null)
+            return false;
+        return true;
     }
 }
 

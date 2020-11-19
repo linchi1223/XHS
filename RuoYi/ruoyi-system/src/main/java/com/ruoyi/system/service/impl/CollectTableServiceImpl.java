@@ -91,4 +91,12 @@ public class CollectTableServiceImpl implements ICollectTableService
     {
         return collectTableMapper.deleteCollectTableById(collid);
     }
+    /*
+     *
+     * 通过用户id和文章id查询
+     *
+     * */
+    public CollectTable selectCollectTableByUseridAndTextid(CollectTable collectTable){
+        return collectTableMapper.selectCollectTableByUseridAndTextid(collectTable);
+    }
 }

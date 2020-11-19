@@ -2,8 +2,10 @@ package com.ruoyi.web.controller.common;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.Response;
 
 import com.ruoyi.framework.web.domain.server.Sys;
+import org.aspectj.weaver.loadtime.Aj;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.FileUtils;
 
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 
@@ -67,17 +70,14 @@ public class CommonController
             log.error("下载文件失败", e);
         }
     }
-
     /**
      * 通用上传请求
      */
-//    @GetMapping("/common/upload")
+    @CrossOrigin
     @RequestMapping(value = "/common/upload",method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public AjaxResult uploadFile(MultipartFile file) throws Exception
     {
-        System.out.println("---------------->"+"yes");
-        System.out.println(file.getOriginalFilename());
         try
         {
             // 上传文件路径
