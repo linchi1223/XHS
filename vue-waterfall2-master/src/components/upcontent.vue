@@ -101,7 +101,7 @@ export default {
       textarea1: "",
       input1: "",
       urladdress: "http://192.168.46.125:8080",
-      // urladdress: "http://192.168.31.121:8080",
+
       fileList: [],
       imglist: "",
       options: [],

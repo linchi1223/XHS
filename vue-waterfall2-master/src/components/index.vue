@@ -286,8 +286,7 @@ export default {
       gitHubData: {},
       originData: {},
       nums: 1,
-      // urladdress: "http://192.168.94.138:8080",
-      // urladdress: "http://192.168.31.121:8080",
+
       urladdress: "http://192.168.46.125:8080",
       originData: json,
       testnum:-1

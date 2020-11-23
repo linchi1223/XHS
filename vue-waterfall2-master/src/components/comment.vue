@@ -167,8 +167,7 @@
 export default {
   data() {
     return {
-      // urladdress: "http://192.168.94.138:8080",
-      // urladdress: "http://192.168.31.121:8080",
+
       urladdress: "http://192.168.46.125:8080",
       followed: "",
       textarea: "",

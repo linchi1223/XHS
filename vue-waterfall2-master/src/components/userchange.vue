@@ -39,7 +39,7 @@ export default {
       userimg: "",
       userimgadd: "",
       urladdress: "http://192.168.46.125:8080",
-      // urladdress: "http://192.168.31.121:8080",
+
     };
   },
   methods: {

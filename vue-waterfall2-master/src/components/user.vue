@@ -123,8 +123,7 @@
 export default {
   data() {
     return {
-      // urladdress: "http://192.168.94.138:8080",
-      // urladdress: "http://192.168.31.121:8080",
+
       urladdress: "http://192.168.46.125:8080",
       followed: false,
       textarea: "",
@@ -152,7 +151,7 @@ export default {
     },
     handleClose(textid) {
       console.log(textid);
-      this.$confirm("确认关闭？")
+      this.$confirm("确认删除？")
         .then(() => {
           console.log(textid);
           this.delect(textid);
