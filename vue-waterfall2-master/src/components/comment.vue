@@ -168,7 +168,7 @@ export default {
   data() {
     return {
 
-      urladdress: "http://192.168.46.125:8080",
+      urladdress: "http://114.215.211.68:8080",
       followed: "",
       textarea: "",
       // textId: "",
@@ -206,11 +206,11 @@ export default {
           // console.log(res.data.result == "true")
           if (res.data.result == "true") {
             console.log(that.user_info.favor);
-            that.user_info.favor += 1;
+            // that.user_info.favor += 1;
           }
           if (res.data.result == "false") {
             console.log(that.user_info.favor);
-            that.user_info.favor -= 1;
+            // that.user_info.favor -= 1;
           }
         })
         .catch(function (error) {

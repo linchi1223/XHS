@@ -38,7 +38,7 @@ export default {
       username: "",
       userimg: "",
       userimgadd: "",
-      urladdress: "http://192.168.46.125:8080",
+      urladdress: "http://114.215.211.68:8080",
 
     };
   },

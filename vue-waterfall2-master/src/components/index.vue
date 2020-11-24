@@ -287,7 +287,7 @@ export default {
       originData: {},
       nums: 1,
 
-      urladdress: "http://192.168.46.125:8080",
+      urladdress: "http://114.215.211.68:8080",
       originData: json,
       testnum:-1
     };

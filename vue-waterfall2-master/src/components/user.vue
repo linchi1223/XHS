@@ -16,6 +16,7 @@
     </el-dialog>
     <div class="contents">
       <div class="head">
+               <!-- <a href="http://114.215.211.68:8080/#/index"> -->
          <a href="http://localhost:8080/#/index">
         <h1
           class="username"
@@ -124,7 +125,7 @@ export default {
   data() {
     return {
 
-      urladdress: "http://192.168.46.125:8080",
+      urladdress: "http://114.215.211.68:8080",
       followed: false,
       textarea: "",
       userid: "",
